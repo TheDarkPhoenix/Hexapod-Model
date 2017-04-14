@@ -20,7 +20,6 @@ int main()
     createTrackbar("alfa", "img", &alfa, 360);
     createTrackbar("beta", "img", &beta, 360);
     createTrackbar("gamma", "img", &gamma, 360);
-    //namedWindow("SterowanieRobotem");
     char key = 'm';
 
     Robot rob(Point3f(0, 13 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
@@ -28,45 +27,45 @@ int main()
     float transStep = 1;
     float rotStep = 0.05;
 
-    while(key != 'q')
+    while(key != 27)
     {
         switch(key)
         {
-            case '1':
+            case 'D':
                 rob.move(Point3f(transStep,0,0));
                 break;
-            case '2':
+            case 'A':
                 rob.move(Point3f(-transStep,0,0));
                 break;
-            case '3':
+            case 'Q':
                 rob.move(Point3f(0,0,transStep));
                 break;
-            case '4':
+            case 'E':
                 rob.move(Point3f(0,0,-transStep));
                 break;
-            case '5':
+            case 'S':
                 rob.move(Point3f(0,transStep,0));
                 break;
-            case '6':
+            case 'W':
                 rob.move(Point3f(0,-transStep,0));
                 break;
 
-            case '7':
+            case '4':
                 rob.rotate(Point3f(0,rotStep,0));
                 break;
-            case '8':
+            case '6':
                 rob.rotate(Point3f(0,-rotStep,0));
                 break;
-            case '9':
+            case '8':
                 rob.rotate(Point3f(rotStep,0,0));
                 break;
-            case '0':
+            case '2':
                 rob.rotate(Point3f(-rotStep,0,0));
                 break;
-            case '[':
+            case '7':
                 rob.rotate(Point3f(0,0,rotStep));
                 break;
-            case ']':
+            case '9':
                 rob.rotate(Point3f(0,0,-rotStep));
                 break;
         }

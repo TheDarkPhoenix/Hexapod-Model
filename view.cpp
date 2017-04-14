@@ -143,10 +143,10 @@ void View::change(char key)
         case 'd':
             translateView(Point3f(translationStep,0,0));
             break;
-        case 'z':
+        case 'q':
             translateView(Point3f(0,0,translationStep));
             break;
-        case 'x':
+        case 'e':
             translateView(Point3f(0,0,-translationStep));
             break;
         case 'r':
