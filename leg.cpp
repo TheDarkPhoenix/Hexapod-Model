@@ -5,11 +5,12 @@
 using namespace std;
 using namespace cv;
 
-Leg::Leg(Point3f joint1, Point3f angles1, Point3f lengths1)
+Leg::Leg(Point3f joint1, Point3f angles1, Point3f lengths1, cv::Point3f signals1)
 {
     legJoints.A = joint1;
     angles = angles1;
     lengths = lengths1;
+    signals = signals1;
 }
 
 void Leg::initJointPoints()
@@ -69,7 +70,20 @@ int Leg::calculateAngles(Point3f angl)
     }
 
     calculateJointPoints(angl);
+    //cout << angles << endl;
+    calculateServoSignals();
     return 1;
+}
+
+void Leg::calculateServoSignals()
+{
+    float wspolczynnik = 4000/CV_PI;//wspolczynnik zamiany katow na sygnaly
+    int sygnalA, sygnalB, sygnalC;
+    sygnalA = angles.x*wspolczynnik + signals.x;
+    sygnalB = angles.y*wspolczynnik + signals.y;
+    sygnalC = (CV_PI/2 - angles.z)*wspolczynnik + signals.z;
+    cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
+
 }
 
 void Leg::setJointA(cv::Point3f joint1)
@@ -85,6 +99,11 @@ void Leg::setAgnles(cv::Point3f angles1)
 void Leg::setR(cv::Mat R1)
 {
     R = R1;
+}
+
+void Leg::setSignals(cv::Point3f sig)
+{
+    signals = sig;
 }
 
 void Leg::setLengths(cv::Point3f lengths1)

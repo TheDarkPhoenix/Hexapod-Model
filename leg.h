@@ -18,10 +18,12 @@ class Leg
         cv::Point3f lengths;//dlugosci poszczegolnych czesci nog x-AB y-BC z-CD
         cv::Mat R; //macierz obrotu taka jak robota
 
+        cv::Point3f signals;
         void calculateJointPoints(cv::Point3f angl);
+        void calculateServoSignals();
     public:
         Leg(){};
-        Leg(cv::Point3f joint1, cv::Point3f angles1, cv::Point3f lengths1);
+        Leg(cv::Point3f joint1, cv::Point3f angles1, cv::Point3f lengths1, cv::Point3f signals1);
 
         void initJointPoints();
         void setJointA(cv::Point3f joint1);
@@ -29,6 +31,7 @@ class Leg
         void setLengths(cv::Point3f lengths1);
         void setR(cv::Mat R1);
         int calculateAngles(cv::Point3f angl);
+        void setSignals(cv::Point3f sig);
         joints getJoints(){return legJoints;};
 };
 
