@@ -19,6 +19,7 @@ class Leg
         cv::Mat R; //macierz obrotu taka jak robota
 
         cv::Point3f signals;
+        cv::Point3i servos;
         void calculateJointPoints(cv::Point3f angl);
         void calculateServoSignals();
     public:
@@ -32,6 +33,7 @@ class Leg
         void setR(cv::Mat R1);
         int calculateAngles(cv::Point3f angl);
         void setSignals(cv::Point3f sig);
+        void setServos(cv::Point3i servos1);
         joints getJoints(){return legJoints;};
 };
 

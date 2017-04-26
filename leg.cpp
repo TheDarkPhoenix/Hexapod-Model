@@ -1,6 +1,8 @@
 #include "leg.h"
 #include <iostream>
 #include <cmath>
+#include <string>
+#include <strstream>
 
 using namespace std;
 using namespace cv;
@@ -77,13 +79,32 @@ int Leg::calculateAngles(Point3f angl)
 
 void Leg::calculateServoSignals()
 {
-    float wspolczynnik = 4000/CV_PI;//wspolczynnik zamiany katow na sygnaly
+    float wspolczynnik = 100/(CV_PI/2 - 1.18);//100/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
     int sygnalA, sygnalB, sygnalC;
     sygnalA = angles.x*wspolczynnik + signals.x;
     sygnalB = angles.y*wspolczynnik + signals.y;
     sygnalC = (CV_PI/2 - angles.z)*wspolczynnik + signals.z;
     cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
 
+    stringstream ss;
+    ss << "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.x)<<","<<(sygnalA);
+    string str = ss.str();
+    system(str.c_str());
+    ss.clear();
+
+    ss<< "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.y)<<","<<(sygnalB);
+    str = ss.str();
+    system(str.c_str());
+    ss.clear();
+
+    ss<<"/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.z)<<","<<(sygnalC);
+    str = ss.str();
+    system(str.c_str());
+}
+
+void Leg::setServos(cv::Point3i servos1)
+{
+    servos = servos1;
 }
 
 void Leg::setJointA(cv::Point3f joint1)

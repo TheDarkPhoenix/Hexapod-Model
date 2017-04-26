@@ -40,34 +40,46 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
         legs[i].setR(R);
 
     Point3f ang1(0.0 ,-0.3 ,1.2);
+    //Point3f ang1(0.0 ,0.0 ,CV_PI/2);
     legs[0].setJointA(frame.ur);
     legs[0].setAgnles(ang1);
     legs[0].setLengths(leglengths);
+    legs[0].setSignals(Point3f(5900,5300,5200));
+    legs[0].setServos(Point3i(5,4,3));
 
     legs[1].setJointA((frame.ur+frame.dr)/2);
     legs[1].setAgnles(ang1);
     legs[1].setLengths(leglengths);
+    legs[1].setSignals(Point3f(6000,5200,5100));
+    legs[1].setServos(Point3i(9,10,11));
 
     legs[2].setJointA(frame.dr);
     legs[2].setAgnles(ang1);
     legs[2].setLengths(leglengths);
+    legs[2].setSignals(Point3f(6200,5300,5300));
+    legs[2].setServos(Point3i(15,16,17));
 
     legs[3].setJointA(frame.ul);
     legs[3].setAgnles(ang1);
     legs[3].setLengths(leglengths);
+    legs[3].setSignals(Point3f(6000,5300,4900));
+    legs[3].setServos(Point3i(0,1,2));
 
     legs[4].setJointA((frame.ul+frame.dl)/2);
     legs[4].setAgnles(ang1);
     legs[4].setLengths(leglengths);
+    legs[4].setSignals(Point3f(6000,5000,5000));
+    legs[4].setServos(Point3i(6,7,8));
 
     legs[5].setJointA(frame.dl);
     legs[5].setAgnles(ang1);
     legs[5].setLengths(leglengths);
+    legs[5].setSignals(Point3f(6000,5300,5200));
+    legs[5].setServos(Point3i(12,13,14));
 
     for(int i = 0; i < 6; ++i)
     {
         legs[i].initJointPoints();
-        legs[i].setSignals(Point3f(6200, 5400, 5200));
     }
 
 }
