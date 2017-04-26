@@ -40,7 +40,7 @@ void Leg::calculateJointPoints(Point3f angl)
     legJoints.D = Point3f(P33.at<float>(0,0), P33.at<float>(0,1), P33.at<float>(0,2)) + legJoints.C;
 }
 
-void Leg::calculateAngles(Point3f angl)
+int Leg::calculateAngles(Point3f angl)
 {
     Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przekszta³ceniu
     //cout << angl.z << endl;
@@ -62,12 +62,14 @@ void Leg::calculateAngles(Point3f angl)
 
     if(angles.x < -1.5 || angles.x > 1.5 || angles.y < -1.5 || angles.y > 1.5 || angles.z < -1.5 || angles.z > 1.5 || angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
     {
-        angles = initAngles;
+        return -1;
+        /*angles = initAngles;
         calculateJointPoints(angl);
-        legEnd = legJoints.D;
+        legEnd = legJoints.D;*/
     }
 
     calculateJointPoints(angl);
+    return 1;
 }
 
 void Leg::setJointA(cv::Point3f joint1)

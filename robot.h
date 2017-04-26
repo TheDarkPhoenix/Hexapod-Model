@@ -10,6 +10,8 @@ class Robot
     private:
         rect frame;
         cv::Point3f position;
+        cv::Point3f initPosition;
+        cv::Point3f initAngles;
         cv::Point3f angles;
         float width, length;
         cv::Mat Rx, Ry, Rz, R;

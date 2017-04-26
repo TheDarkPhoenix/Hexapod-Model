@@ -11,6 +11,8 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
     width = width1;
     length = length1;
     position.y = -position.y;
+    initPosition = position;
+    initAngles = angles;
     /*Rx = (Mat_<float>(3,3) << 1, 0, 0, 0, cos(angles.x), -sin(angles.x), 0, sin(angles.x), cos(angles.x));
     Ry = (Mat_<float>(3,3) << cos(angles.y), 0, sin(angles.y), 0, 1, 0, -sin(angles.y), 0, cos(angles.y));
     Rz = (Mat_<float>(3,3) << cos(angles.z), -sin(angles.z), 0, sin(angles.z), cos(angles.z), 0, 0, 0, 1);
@@ -121,14 +123,21 @@ void Robot::update()
 
 void Robot::move(Point3f p)
 {
+
     position += p;
 
     update();
 
     for(int i = 0; i < 3; ++i)
-        legs[i].calculateAngles(-angles);
+    {
+        if(legs[i].calculateAngles(-angles) == -1)
+            this->move(-p);
+    }
     for(int i = 3; i < 6; ++i)
-        legs[i].calculateAngles(angles);
+    {
+        if(legs[i].calculateAngles(angles) == -1)
+            this->move(-p);
+    }
 }
 
 void Robot::rotate(Point3f ang)
@@ -138,7 +147,13 @@ void Robot::rotate(Point3f ang)
     update();
 
     for(int i = 0; i < 3; ++i)
-        legs[i].calculateAngles(-angles);
+    {
+        if(legs[i].calculateAngles(-angles) == -1)
+            this->rotate(-ang);
+    }
     for(int i = 3; i < 6; ++i)
-        legs[i].calculateAngles(angles);
+    {
+        if(legs[i].calculateAngles(angles) == -1)
+            this->rotate(-ang);
+    }
 }

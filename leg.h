@@ -28,7 +28,7 @@ class Leg
         void setAgnles(cv::Point3f angles1);
         void setLengths(cv::Point3f lengths1);
         void setR(cv::Mat R1);
-        void calculateAngles(cv::Point3f angl);
+        int calculateAngles(cv::Point3f angl);
         joints getJoints(){return legJoints;};
 };
 
