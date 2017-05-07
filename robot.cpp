@@ -1,5 +1,6 @@
 #include "robot.h"
 #include <iostream>
+#include <strstream>
 
 using namespace cv;
 using namespace std;
@@ -81,7 +82,28 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
     {
         legs[i].initJointPoints();
     }
+    stringstream ss;
+    for(int i = 0; i < 18; ++i)
+    {
+        ss << "usccmd --speed "<<(i)<<","<<(100);
+        string str = ss.str();
+        //system(str.c_str());
+        ss.clear();
+    }
+    /*ss << "usccmd --speed "<<(0)<<","<<(10);
+    string str = ss.str();
+    system(str.c_str());
+    ss.clear();
 
+    ss << "usccmd --speed "<<(1)<<","<<(10);
+     str = ss.str();
+    system(str.c_str());
+    ss.clear();
+
+    ss << "usccmd --speed "<<(2)<<","<<(10);
+     str = ss.str();
+    system(str.c_str());
+    ss.clear();*/
 }
 
 joints Robot::getLegJoints(int n)
@@ -141,7 +163,21 @@ void Robot::move(Point3f p)
 
     update();
 
-    for(int i = 0; i < 3; ++i)
+    if(legs[0].calculateAngles(-angles) == -1)
+            this->move(-p);
+    if(legs[4].calculateAngles(-angles) == -1)
+            this->move(-p);
+    if(legs[2].calculateAngles(-angles) == -1)
+            this->move(-p);
+    if(legs[5].calculateAngles(-angles) == -1)
+            this->move(-p);
+    if(legs[1].calculateAngles(-angles) == -1)
+            this->move(-p);
+    if(legs[3].calculateAngles(-angles) == -1)
+            this->move(-p);
+
+
+    /*for(int i = 0; i < 3; ++i)
     {
         if(legs[i].calculateAngles(-angles) == -1)
             this->move(-p);
@@ -150,7 +186,7 @@ void Robot::move(Point3f p)
     {
         if(legs[i].calculateAngles(angles) == -1)
             this->move(-p);
-    }
+    }*/
 }
 
 void Robot::rotate(Point3f ang)

@@ -79,25 +79,25 @@ int Leg::calculateAngles(Point3f angl)
 
 void Leg::calculateServoSignals()
 {
-    float wspolczynnik = 100/(CV_PI/2 - 1.18);//100/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
+    float wspolczynnik = 1000/(CV_PI/2 - 1.18);//100/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
     int sygnalA, sygnalB, sygnalC;
-    sygnalA = angles.x*wspolczynnik + signals.x;
-    sygnalB = angles.y*wspolczynnik + signals.y;
-    sygnalC = (CV_PI/2 - angles.z)*wspolczynnik + signals.z;
+    sygnalA = -angles.x*wspolczynnik + signals.x;
+    sygnalB = -angles.y*wspolczynnik + signals.y;
+    sygnalC = (  -angles.z)*wspolczynnik + signals.z;
     cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
 
     stringstream ss;
-    ss << "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.x)<<","<<(sygnalA);
+    ss << "usccmd --servo "<<(servos.x)<<","<<(sygnalA);
     string str = ss.str();
     system(str.c_str());
     ss.clear();
 
-    ss<< "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.y)<<","<<(sygnalB);
+    ss<< "usccmd --servo "<<(servos.y)<<","<<(sygnalB);
     str = ss.str();
     system(str.c_str());
     ss.clear();
 
-    ss<<"/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.z)<<","<<(sygnalC);
+    ss<<"usccmd --servo "<<(servos.z)<<","<<(sygnalC);
     str = ss.str();
     system(str.c_str());
 }
