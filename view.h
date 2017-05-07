@@ -21,12 +21,13 @@ class View
         void rotateView(cv::Point3f angles);
         void setAngles(cv::Point3f angles);
         void translateView(cv::Point3f translation);
-        void drawPoint(cv::Mat& screen, cv::Point3f point, cv::Scalar color, int size1 = 2);
-        void drawLine(cv::Mat& screen, cv::Point3f p1, cv::Point3f p2, cv::Scalar color, int thickness=1);
-        void drawRectangle(cv::Mat& screen, rect rec, cv::Scalar color, int thickness=1);
+        void drawPoint(cv::Mat& screen, cv::Point3f point, cv::Scalar color = cv::Scalar(0,0,255), int size1 = 2);
+        void drawLine(cv::Mat& screen, cv::Point3f p1, cv::Point3f p2, cv::Scalar color = cv::Scalar(0,0,255), int thickness=1);
+        void drawRectangle(cv::Mat& screen, rect rec, cv::Scalar color = cv::Scalar(0,0,255), int thickness=1);
         void drawRobot(cv::Mat& screen, Robot& rob);
         void drawFloor(cv::Mat& screen);
         void change(char key);
+        void drawAxis(cv::Mat& screen, cv::Point3f pt);
 };
 
 #endif // VIEW_H

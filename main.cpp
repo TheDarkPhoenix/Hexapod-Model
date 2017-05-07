@@ -74,6 +74,7 @@ int main()
         view1.change(key);
         view1.setAngles(Point3f((alfa-180)*SCALE, (beta-180)*SCALE, (gamma-180)*SCALE));
         view1.drawFloor(screen);
+        view1.drawAxis(screen, Point3f(0,0,0));
         view1.drawRobot(screen, rob);
         imshow("img", screen);
         key = waitKey(10);
