@@ -4,6 +4,11 @@
 #include <string>
 #include <strstream>
 
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <termios.h>
+
 using namespace std;
 using namespace cv;
 
@@ -77,29 +82,174 @@ int Leg::calculateAngles(Point3f angl)
     return 1;
 }
 
+
+
+
+int maestroGetError(int fd)
+{
+    unsigned char command[] = { 0xAA, 0xC, 0x21 };
+    if (write(fd, command, sizeof(command)) != 3)
+    {
+        perror("error writing");
+        return -1;
+    }
+
+    int n = 0;
+    unsigned char response[2];
+    do
+    {
+        int ec = read(fd, response+n, 1);
+        if(ec < 0)
+        {
+            perror("error reading");
+            return ec;
+        }
+        if (ec == 0)
+        {
+            continue;
+        }
+        n++;
+
+    } while (n < 2);
+
+    //Helpfull for debugging
+    //printf("Error n: %d\n", n);
+    //printf("Error secon: %d\n", response[1]);
+
+    return (int)sqrt(response[0] + 256*response[1]);
+}
+
+
+int maestroGetPosition(int fd, unsigned char channel)
+{
+    unsigned char command[] = {0xAA, 0xC, 0x10, channel};
+    if(write(fd, command, sizeof(command)) == -1)
+    {
+        perror("error writing");
+        return -1;
+    }
+
+    int n = 0;
+    char response[2];
+    do
+    {
+        int ec = read(fd, response+n, 1);
+        if(ec < 0)
+        {
+            perror("error reading");
+            return ec;
+        }
+        if (ec == 0)
+        {
+            continue;
+        }
+        n++;
+
+    } while (n < 2);
+
+    return response[0] + 256*response[1];
+}
+
+
+int maestroSetTarget(int fd, unsigned char channel, unsigned short target)
+{
+    unsigned char command[] = {0xAA, 0xC, 0x04, channel, target & 0x7F, target >> 7 & 0x7F};
+    if (write(fd, command, sizeof(command)) == -1)
+    {
+        perror("error writing");
+        return -1;
+    }
+    return 0;
+}
+
+
+
 void Leg::calculateServoSignals()
 {
     float wspolczynnik = 1000/(CV_PI/2 - 1.18);//100/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
     int sygnalA, sygnalB, sygnalC;
-    sygnalA = -angles.x*wspolczynnik + signals.x;
+    sygnalA = angles.x*wspolczynnik + signals.x;
     sygnalB = -angles.y*wspolczynnik + signals.y;
-    sygnalC = (  -angles.z)*wspolczynnik + signals.z;
-    cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
+    sygnalC = -(CV_PI/2 -angles.z)*wspolczynnik + signals.z;
 
+     cout << -(CV_PI/2 -angles.z)*wspolczynnik  << endl;
+
+    const char * device = "/dev/ttyAMA0";  // Linux
+    int fd = open(device, O_RDWR | O_NOCTTY);
+
+    struct termios options;
+    tcgetattr(fd, &options);
+    cfsetispeed(&options, B9600);
+    cfsetospeed(&options, B9600);
+
+    options.c_cflag &= ~PARENB;
+    options.c_cflag &= ~CSTOPB;
+    options.c_cflag &= ~CSIZE;
+    options.c_cflag |= CS8;
+
+    // no flow control
+    options.c_cflag &= ~CRTSCTS;
+
+    options.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
+    options.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
+
+    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
+    options.c_oflag &= ~OPOST; // make raw
+
+    // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
+    options.c_cc[VMIN]  = 0;
+    options.c_cc[VTIME] = 20;
+
+    if (tcsetattr(fd, TCSANOW, &options) < 0)
+    {
+        perror("init_serialport: Couldn't set term attributes");
+        return;
+    }
+
+    if (fd == -1)
+    {
+        perror(device);
+        return;
+    }
+    /*int channel = 3;
+    int error = maestroGetError(fd);
+    fprintf(stderr, "Error is %d.\n", error);
+    if (error > 0)
+        fprintf(stderr, "Error is %d.\n", error);
+    maestroSetTarget(fd, 1, 5000);
+    int position = maestroGetPosition(fd, channel);
+    printf("Current position is %d.\n", position);
+    int target = (position < 6000) ? 7000 : 5000;
+    printf("Setting target to %d (%d us).\n", target, target/4);
+    maestroSetTarget(fd, channel, target);
+    position = maestroGetPosition(fd, channel);
+    printf("Current position is %d.\n", position);
+    target = (position < 6000) ? 7000 : 5000;
+    printf("Setting target to %d (%d us).\n", target, target/4);
+    maestroSetTarget(fd, channel, target);
+    position = maestroGetPosition(fd, channel);
+    printf("Current position is %d.\n", position);*/
+
+    maestroSetTarget(fd, servos.x, sygnalA);
+    maestroSetTarget(fd, servos.y, sygnalB);
+    maestroSetTarget(fd, servos.z, sygnalC);
+
+    close(fd);
+
+
+    /*cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
     stringstream ss;
-    ss << "usccmd --servo "<<(servos.x)<<","<<(sygnalA);
+    ss << "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.x)<<","<<(sygnalA);
     string str = ss.str();
     system(str.c_str());
     ss.clear();
-
-    ss<< "usccmd --servo "<<(servos.y)<<","<<(sygnalB);
+    ss<< "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.y)<<","<<(sygnalB);
     str = ss.str();
     system(str.c_str());
     ss.clear();
-
-    ss<<"usccmd --servo "<<(servos.z)<<","<<(sygnalC);
+    ss<<"/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.z)<<","<<(sygnalC);
     str = ss.str();
-    system(str.c_str());
+    system(str.c_str());*/
 }
 
 void Leg::setServos(cv::Point3i servos1)
