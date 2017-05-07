@@ -17,6 +17,7 @@ class Leg
         cv::Point3f initAngles;
         cv::Point3f lengths;//dlugosci poszczegolnych czesci nog x-AB y-BC z-CD
         cv::Mat R; //macierz obrotu taka jak robota
+        cv::Point3f relAngles; //katy wzgledne
 
         cv::Point3f signals;
         cv::Point3i servos;

@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <termios.h>
+//#include <termios.h>
 
 using namespace std;
 using namespace cv;
@@ -51,9 +51,9 @@ void Leg::calculateJointPoints(Point3f angl)
 int Leg::calculateAngles(Point3f angl)
 {
     Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przekszta³ceniu
-    //cout << angl.z << endl;
+
     float lx = lengths.x*cos(angl.z);
-    //newPos.y += lengths.x*sin(angl.z);
+
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
     float iksw = sqrt(pow((L-lx),2)+pow(newPos.y,2));
 
@@ -65,8 +65,13 @@ int Leg::calculateAngles(Point3f angl)
         angles.x = -atan(newPos.z/newPos.x);
     else
         angles.x = 0;
+
     angles.y = -(a1+a2-0.5*CV_PI);
     angles.z = (CV_PI - b + angles.y);
+
+    relAngles.x = angles.x;
+    relAngles.y = angles.y;
+    relAngles.z = b;
 
     if(angles.x < -1.5 || angles.x > 1.5 || angles.y < -1.5 || angles.y > 1.5 || angles.z < -1.5 || angles.z > 1.5 || angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
     {
@@ -81,9 +86,6 @@ int Leg::calculateAngles(Point3f angl)
     calculateServoSignals();
     return 1;
 }
-
-
-
 
 int maestroGetError(int fd)
 {
@@ -119,7 +121,6 @@ int maestroGetError(int fd)
     return (int)sqrt(response[0] + 256*response[1]);
 }
 
-
 int maestroGetPosition(int fd, unsigned char channel)
 {
     unsigned char command[] = {0xAA, 0xC, 0x10, channel};
@@ -150,7 +151,6 @@ int maestroGetPosition(int fd, unsigned char channel)
     return response[0] + 256*response[1];
 }
 
-
 int maestroSetTarget(int fd, unsigned char channel, unsigned short target)
 {
     unsigned char command[] = {0xAA, 0xC, 0x04, channel, target & 0x7F, target >> 7 & 0x7F};
@@ -162,19 +162,17 @@ int maestroSetTarget(int fd, unsigned char channel, unsigned short target)
     return 0;
 }
 
-
-
 void Leg::calculateServoSignals()
 {
-    float wspolczynnik = 1000/(CV_PI/2 - 1.18);//100/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
+    float wspolczynnik = 1000/(CV_PI/2 - 1.18);//wspolczynnik zamiany katow na sygnaly
     int sygnalA, sygnalB, sygnalC;
-    sygnalA = angles.x*wspolczynnik + signals.x;
-    sygnalB = -angles.y*wspolczynnik + signals.y;
-    sygnalC = -(CV_PI/2 -angles.z)*wspolczynnik + signals.z;
+    sygnalA = relAngles.x*wspolczynnik + signals.x;
+    sygnalB = -relAngles.y*wspolczynnik + signals.y;
+    sygnalC = (CV_PI/2 -relAngles.z)*wspolczynnik + signals.z;
+    //cout << sygnalC << endl;
+    //cout << -(CV_PI/2 -angles.z)*wspolczynnik  << endl;
 
-     cout << -(CV_PI/2 -angles.z)*wspolczynnik  << endl;
-
-    const char * device = "/dev/ttyAMA0";  // Linux
+    /*const char * device = "/dev/ttyAMA0";  // Linux
     int fd = open(device, O_RDWR | O_NOCTTY);
 
     struct termios options;
@@ -211,45 +209,12 @@ void Leg::calculateServoSignals()
         perror(device);
         return;
     }
-    /*int channel = 3;
-    int error = maestroGetError(fd);
-    fprintf(stderr, "Error is %d.\n", error);
-    if (error > 0)
-        fprintf(stderr, "Error is %d.\n", error);
-    maestroSetTarget(fd, 1, 5000);
-    int position = maestroGetPosition(fd, channel);
-    printf("Current position is %d.\n", position);
-    int target = (position < 6000) ? 7000 : 5000;
-    printf("Setting target to %d (%d us).\n", target, target/4);
-    maestroSetTarget(fd, channel, target);
-    position = maestroGetPosition(fd, channel);
-    printf("Current position is %d.\n", position);
-    target = (position < 6000) ? 7000 : 5000;
-    printf("Setting target to %d (%d us).\n", target, target/4);
-    maestroSetTarget(fd, channel, target);
-    position = maestroGetPosition(fd, channel);
-    printf("Current position is %d.\n", position);*/
 
     maestroSetTarget(fd, servos.x, sygnalA);
     maestroSetTarget(fd, servos.y, sygnalB);
     maestroSetTarget(fd, servos.z, sygnalC);
 
-    close(fd);
-
-
-    /*cout << sygnalA << ' ' << sygnalB << ' ' << sygnalC << endl;
-    stringstream ss;
-    ss << "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.x)<<","<<(sygnalA);
-    string str = ss.str();
-    system(str.c_str());
-    ss.clear();
-    ss<< "/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.y)<<","<<(sygnalB);
-    str = ss.str();
-    system(str.c_str());
-    ss.clear();
-    ss<<"/home/pi/maestrolinux/maestro-linux/UscCmd --servo "<<(servos.z)<<","<<(sygnalC);
-    str = ss.str();
-    system(str.c_str());*/
+    close(fd);*/
 }
 
 void Leg::setServos(cv::Point3i servos1)
