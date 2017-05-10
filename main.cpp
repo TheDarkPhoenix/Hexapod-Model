@@ -24,7 +24,7 @@ int main()
 
     Robot rob(Point3f(0, 13 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
 
-    float transStep = 5;
+    float transStep = 1;
     float rotStep = 0.05;
 
     while(key != 27)
