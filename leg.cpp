@@ -27,6 +27,42 @@ void Leg::initJointPoints()
     initAngles = angles;
 }
 
+
+void Leg::setServos(cv::Point3i servos1)
+{
+    servos = servos1;
+}
+
+void Leg::setJointA(cv::Point3f joint1)
+{
+    legJoints.A = joint1;
+}
+
+void Leg::setAgnles(cv::Point3f angles1)
+{
+    angles = angles1;
+}
+
+void Leg::setR(cv::Mat R1)
+{
+    R = R1;
+}
+
+void Leg::setSignals(cv::Point3f sig)
+{
+    signals = sig;
+}
+
+void Leg::setLengths(cv::Point3f lengths1)
+{
+    lengths = lengths1;
+}
+
+void Leg::setLegEnd(cv::Point3f legEnd1)
+{
+    legEnd = legEnd1;
+}
+
 void Leg::calculateJointPoints(Point3f angl)
 {
     Mat P1 = (Mat_<float>(3,1) << lengths.x, 0, 0);
@@ -51,7 +87,10 @@ void Leg::calculateJointPoints(Point3f angl)
 int Leg::calculateAngles(Point3f angl)
 {
     Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przekszta³ceniu
-
+    //newPos.x = abs(newPos.x);
+    //newPos.y = abs(newPos.y);
+    //newPos.z = abs(newPos.z);
+    cout << newPos << endl;
     float lx = lengths.x*cos(angl.z);
 
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
@@ -86,6 +125,8 @@ int Leg::calculateAngles(Point3f angl)
     calculateServoSignals();
     return 1;
 }
+
+
 
 int maestroGetError(int fd)
 {
@@ -215,34 +256,4 @@ void Leg::calculateServoSignals()
     maestroSetTarget(fd, servos.z, sygnalC);
 
     close(fd);*/
-}
-
-void Leg::setServos(cv::Point3i servos1)
-{
-    servos = servos1;
-}
-
-void Leg::setJointA(cv::Point3f joint1)
-{
-    legJoints.A = joint1;
-}
-
-void Leg::setAgnles(cv::Point3f angles1)
-{
-    angles = angles1;
-}
-
-void Leg::setR(cv::Mat R1)
-{
-    R = R1;
-}
-
-void Leg::setSignals(cv::Point3f sig)
-{
-    signals = sig;
-}
-
-void Leg::setLengths(cv::Point3f lengths1)
-{
-    lengths = lengths1;
 }

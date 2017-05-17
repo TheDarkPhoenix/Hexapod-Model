@@ -17,6 +17,7 @@ class Robot
         cv::Mat Rx, Ry, Rz, R;
         Leg legs[6];
         void update();
+        int walkingStep;
     public:
         Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::Point3f leglengths);
         cv::Point3f getPosition(){return position;};
@@ -25,6 +26,7 @@ class Robot
         joints getLegJoints(int n);
         void move(cv::Point3f p);
         void rotate(cv::Point3f ang);
+        void walk(cv::Point3f steps);
 };
 
 #endif // ROBOT_H

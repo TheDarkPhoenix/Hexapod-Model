@@ -186,7 +186,7 @@ void View::drawFloor(cv::Mat& screen)
 void View::drawAxis(cv::Mat& screen, cv::Point3f pt)
 {
     drawPoint(screen, pt);
-    drawLine(screen, pt, pt+Point3f(10,0,0), Scalar(255,0,0), 2);
-    drawLine(screen, pt, pt+Point3f(0,10,0), Scalar(0,255,0), 2);
-    drawLine(screen, pt, pt+Point3f(0,0,10), Scalar(0,0,255), 2);
+    drawLine(screen, pt, pt+Point3f(10,0,0), Scalar(255,0,0), 2);//x niebieski
+    drawLine(screen, pt, pt+Point3f(0,10,0), Scalar(0,255,0), 2);//y zielony
+    drawLine(screen, pt, pt+Point3f(0,0,10), Scalar(0,0,255), 2);//z czerwony
 }

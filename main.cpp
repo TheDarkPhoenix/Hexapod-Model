@@ -27,21 +27,37 @@ int main()
     float transStep = 1;
     float rotStep = 0.05;
 
+    bool walking = true;
+
+    float walkStep = 3;
+
     while(key != 27)
     {
         switch(key)
         {
             case 'D':
-                rob.move(Point3f(transStep,0,0));
+                if(walking)
+                    rob.walk(Point3f(walkStep,0,0));
+                else
+                    rob.move(Point3f(transStep,0,0));
                 break;
             case 'A':
-                rob.move(Point3f(-transStep,0,0));
+                if(walking)
+                    rob.walk(Point3f(-walkStep,0,0));
+                else
+                    rob.move(Point3f(-transStep,0,0));
                 break;
             case 'Q':
-                rob.move(Point3f(0,0,transStep));
+                if(walking)
+                    rob.walk(Point3f(0,0,walkStep));
+                else
+                    rob.move(Point3f(0,0,transStep));
                 break;
             case 'E':
-                rob.move(Point3f(0,0,-transStep));
+                if(walking)
+                    rob.walk(Point3f(0,0,-walkStep));
+                else
+                    rob.move(Point3f(0,0,-transStep));
                 break;
             case 'S':
                 rob.move(Point3f(0,transStep,0));
@@ -75,6 +91,7 @@ int main()
         view1.setAngles(Point3f((alfa-180)*SCALE, (beta-180)*SCALE, (gamma-180)*SCALE));
         view1.drawFloor(screen);
         view1.drawAxis(screen, Point3f(0,0,0));
+        view1.drawAxis(screen, rob.getPosition());
         view1.drawRobot(screen, rob);
         imshow("img", screen);
         key = waitKey(10);
