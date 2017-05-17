@@ -7,7 +7,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
-//#include <termios.h>
+#include <termios.h>
 
 using namespace std;
 using namespace cv;
@@ -213,7 +213,7 @@ void Leg::calculateServoSignals()
     //cout << sygnalC << endl;
     //cout << -(CV_PI/2 -angles.z)*wspolczynnik  << endl;
 
-    /*const char * device = "/dev/ttyAMA0";  // Linux
+    const char * device = "/dev/ttyAMA0";  // Linux
     int fd = open(device, O_RDWR | O_NOCTTY);
 
     struct termios options;
@@ -255,5 +255,5 @@ void Leg::calculateServoSignals()
     maestroSetTarget(fd, servos.y, sygnalB);
     maestroSetTarget(fd, servos.z, sygnalC);
 
-    close(fd);*/
+    close(fd);
 }

@@ -46,13 +46,13 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
     legs[0].setJointA(frame.ur);
     legs[0].setAgnles(ang1);
     legs[0].setLengths(leglengths);
-    legs[0].setSignals(Point3f(5900,5300,5200));
+    legs[0].setSignals(Point3f(5900,5100,5200));
     legs[0].setServos(Point3i(5,4,3));
 
     legs[1].setJointA((frame.ur+frame.dr)/2);
     legs[1].setAgnles(ang1);
     legs[1].setLengths(leglengths);
-    legs[1].setSignals(Point3f(6000,5200,5100));
+    legs[1].setSignals(Point3f(6000,5200,4900));
     legs[1].setServos(Point3i(9,10,11));
 
     legs[2].setJointA(frame.dr);
