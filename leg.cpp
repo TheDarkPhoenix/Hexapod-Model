@@ -4,11 +4,6 @@
 #include <string>
 #include <strstream>
 
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termios.h>
-
 using namespace std;
 using namespace cv;
 
@@ -63,6 +58,11 @@ void Leg::setLegEnd(cv::Point3f legEnd1)
     legEnd = legEnd1;
 }
 
+void Leg::setDevice(Maestro* dev)
+{
+    device = dev;
+}
+
 void Leg::calculateJointPoints(Point3f angl)
 {
     Mat P1 = (Mat_<float>(3,1) << lengths.x, 0, 0);
@@ -86,11 +86,11 @@ void Leg::calculateJointPoints(Point3f angl)
 
 int Leg::calculateAngles(Point3f angl)
 {
-    Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przekszta³ceniu
+    Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przeksztaÂ³ceniu
     //newPos.x = abs(newPos.x);
     //newPos.y = abs(newPos.y);
     //newPos.z = abs(newPos.z);
-    cout << newPos << endl;
+    //cout << newPos << endl;
     float lx = lengths.x*cos(angl.z);
 
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
@@ -122,85 +122,8 @@ int Leg::calculateAngles(Point3f angl)
 
     calculateJointPoints(angl);
     //cout << angles << endl;
-    calculateServoSignals();
+    //calculateServoSignals();
     return 1;
-}
-
-
-
-int maestroGetError(int fd)
-{
-    unsigned char command[] = { 0xAA, 0xC, 0x21 };
-    if (write(fd, command, sizeof(command)) != 3)
-    {
-        perror("error writing");
-        return -1;
-    }
-
-    int n = 0;
-    unsigned char response[2];
-    do
-    {
-        int ec = read(fd, response+n, 1);
-        if(ec < 0)
-        {
-            perror("error reading");
-            return ec;
-        }
-        if (ec == 0)
-        {
-            continue;
-        }
-        n++;
-
-    } while (n < 2);
-
-    //Helpfull for debugging
-    //printf("Error n: %d\n", n);
-    //printf("Error secon: %d\n", response[1]);
-
-    return (int)sqrt(response[0] + 256*response[1]);
-}
-
-int maestroGetPosition(int fd, unsigned char channel)
-{
-    unsigned char command[] = {0xAA, 0xC, 0x10, channel};
-    if(write(fd, command, sizeof(command)) == -1)
-    {
-        perror("error writing");
-        return -1;
-    }
-
-    int n = 0;
-    char response[2];
-    do
-    {
-        int ec = read(fd, response+n, 1);
-        if(ec < 0)
-        {
-            perror("error reading");
-            return ec;
-        }
-        if (ec == 0)
-        {
-            continue;
-        }
-        n++;
-
-    } while (n < 2);
-
-    return response[0] + 256*response[1];
-}
-
-int maestroSetTarget(int fd, unsigned char channel, unsigned short target)
-{
-    unsigned char command[] = {0xAA, 0xC, 0x04, channel, target & 0x7F, target >> 7 & 0x7F};
-    if (write(fd, command, sizeof(command)) == -1)
-    {
-        perror("error writing");
-        return -1;
-    }
-    return 0;
 }
 
 void Leg::calculateServoSignals()
@@ -212,48 +135,10 @@ void Leg::calculateServoSignals()
     sygnalC = (CV_PI/2 -relAngles.z)*wspolczynnik + signals.z;
     //cout << sygnalC << endl;
     //cout << -(CV_PI/2 -angles.z)*wspolczynnik  << endl;
-
-    const char * device = "/dev/ttyAMA0";  // Linux
-    int fd = open(device, O_RDWR | O_NOCTTY);
-
-    struct termios options;
-    tcgetattr(fd, &options);
-    cfsetispeed(&options, B9600);
-    cfsetospeed(&options, B9600);
-
-    options.c_cflag &= ~PARENB;
-    options.c_cflag &= ~CSTOPB;
-    options.c_cflag &= ~CSIZE;
-    options.c_cflag |= CS8;
-
-    // no flow control
-    options.c_cflag &= ~CRTSCTS;
-
-    options.c_cflag |= CREAD | CLOCAL;  // turn on READ & ignore ctrl lines
-    options.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off s/w flow ctrl
-
-    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // make raw
-    options.c_oflag &= ~OPOST; // make raw
-
-    // see: http://unixwiz.net/techtips/termios-vmin-vtime.html
-    options.c_cc[VMIN]  = 0;
-    options.c_cc[VTIME] = 20;
-
-    if (tcsetattr(fd, TCSANOW, &options) < 0)
+    if(device)
     {
-        perror("init_serialport: Couldn't set term attributes");
-        return;
+        device->setTarget(servos.x, sygnalA);
+        device->setTarget(servos.y, sygnalB);
+        device->setTarget(servos.z, sygnalC);
     }
-
-    if (fd == -1)
-    {
-        perror(device);
-        return;
-    }
-
-    maestroSetTarget(fd, servos.x, sygnalA);
-    maestroSetTarget(fd, servos.y, sygnalB);
-    maestroSetTarget(fd, servos.z, sygnalC);
-
-    close(fd);
 }

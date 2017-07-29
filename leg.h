@@ -7,6 +7,7 @@
 
 #include <opencv2/core/core.hpp>
 #include "util.h"
+#include "maestro.h"
 
 class Leg
 {
@@ -21,22 +22,27 @@ class Leg
 
         cv::Point3f signals;
         cv::Point3i servos;
+        Maestro* device;
         void calculateJointPoints(cv::Point3f angl);
         void calculateServoSignals();
     public:
         Leg(){};
         Leg(cv::Point3f joint1, cv::Point3f angles1, cv::Point3f lengths1, cv::Point3f signals1);
 
+        joints getJoints(){return legJoints;};
+
         void initJointPoints();
+
         void setJointA(cv::Point3f joint1);
         void setAgnles(cv::Point3f angles1);
         void setLengths(cv::Point3f lengths1);
         void setLegEnd(cv::Point3f legEnd1);
         void setR(cv::Mat R1);
-        int calculateAngles(cv::Point3f angl);
         void setSignals(cv::Point3f sig);
         void setServos(cv::Point3i servos1);
-        joints getJoints(){return legJoints;};
+        void setDevice(Maestro* dev);
+
+        int calculateAngles(cv::Point3f angl);
 };
 
 #endif // LEG_H

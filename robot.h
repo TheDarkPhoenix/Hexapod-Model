@@ -4,6 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include "util.h"
 #include "leg.h"
+#include "maestro.h"
 
 class Robot
 {
@@ -18,6 +19,8 @@ class Robot
         Leg legs[6];
         void update();
         int walkingStep;
+        Maestro device;
+
     public:
         Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::Point3f leglengths);
         cv::Point3f getPosition(){return position;};
