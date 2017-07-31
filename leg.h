@@ -23,7 +23,7 @@ class Leg
         cv::Point3f signals;
         cv::Point3i servos;
         Maestro* device;
-        void calculateJointPoints(cv::Point3f angl);
+        void calculateJointPoints();
         void calculateServoSignals();
     public:
         Leg(){};
@@ -42,7 +42,7 @@ class Leg
         void setServos(cv::Point3i servos1);
         void setDevice(Maestro* dev);
 
-        int calculateAngles(cv::Point3f angl);
+        int calculateAngles();
 };
 
 #endif // LEG_H

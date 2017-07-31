@@ -17,7 +17,7 @@ Leg::Leg(Point3f joint1, Point3f angles1, Point3f lengths1, cv::Point3f signals1
 
 void Leg::initJointPoints()
 {
-    calculateJointPoints(Point3f(0,0,0));
+    calculateJointPoints();
     legEnd = legJoints.D;
     initAngles = angles;
 }
@@ -63,7 +63,7 @@ void Leg::setDevice(Maestro* dev)
     device = dev;
 }
 
-void Leg::calculateJointPoints(Point3f angl)
+void Leg::calculateJointPoints()
 {
     Mat P1 = (Mat_<float>(3,1) << lengths.x, 0, 0);
     Mat R1 = (Mat_<float>(3,3) << cos(angles.x), 0, sin(angles.x), 0, 1, 0, -sin(angles.x), 0, cos(angles.x));
@@ -86,14 +86,14 @@ void Leg::calculateJointPoints(Point3f angl)
     legJoints.D = Point3f(P33.at<float>(0,0), P33.at<float>(0,1), P33.at<float>(0,2)) + legJoints.C;
 }
 
-int Leg::calculateAngles(Point3f angl)
+int Leg::calculateAngles()
 {
     Point3f newPos = legEnd-legJoints.A; // pozycja poczatku nogi po przekszta³ceniu
     //newPos.x = abs(newPos.x);
     //newPos.y = abs(newPos.y);
     //newPos.z = abs(newPos.z);
     //cout << newPos << endl;
-    float lx = lengths.x*cos(angl.z);
+    float lx = lengths.x;
 
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
     float iksw = sqrt(pow((L-lx),2)+pow(newPos.y,2));
@@ -117,14 +117,14 @@ int Leg::calculateAngles(Point3f angl)
     //if(angles.x < -1.5 || angles.x > 1.5 || angles.y < -1.5 || angles.y > 1.5 || angles.z < -1.5 || angles.z > 1.5 || angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
     if(angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
     {
-        calculateJointPoints(angl);
+        calculateJointPoints();
         return -1;
         /*angles = initAngles;
         calculateJointPoints(angl);
         legEnd = legJoints.D;*/
     }
 
-    calculateJointPoints(angl);
+    calculateJointPoints();
     //cout << angles << endl;
     //calculateServoSignals();
     return 1;
