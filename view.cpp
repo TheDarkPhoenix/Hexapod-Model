@@ -54,7 +54,7 @@ void View::drawPoint(cv::Mat& screen, cv::Point3f p1, Scalar color, int size1)
 {
     float x = p1.x-T.x;
     float y = p1.y-T.y;
-    float z=p1.z-T.z;
+    float z = p1.z-T.z;
 
     //rzutowanie punktu tak jak na wikipedii
     Point3f p11;

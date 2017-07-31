@@ -72,13 +72,15 @@ void Leg::calculateJointPoints(Point3f angl)
     legJoints.B = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2)) + legJoints.A;
 
     Mat P2 = (Mat_<float>(3,1) << lengths.y, 0, 0);
-    Mat R2 = (Mat_<float>(3,3) << cos(angles.y+angl.z), -sin(angles.y+angl.z), 0, sin(angles.y+angl.z), cos(angles.y+angl.z), 0, 0, 0, 1);
+    //Mat R2 = (Mat_<float>(3,3) << cos(angles.y), -sin(angles.y+angl.z), 0, sin(angles.y+angl.z), cos(angles.y+angl.z), 0, 0, 0, 1);
+    Mat R2 = (Mat_<float>(3,3) << cos(angles.y), -sin(angles.y), 0, sin(angles.y), cos(angles.y), 0, 0, 0, 1);
     Mat P22 = R1*(R2*P2);
     P22 = R*P22;
     legJoints.C = Point3f(P22.at<float>(0,0), P22.at<float>(0,1), P22.at<float>(0,2)) + legJoints.B;
 
     Mat P3 = (Mat_<float>(3,1) << lengths.z, 0, 0);
-    Mat R3 = (Mat_<float>(3,3) << cos(angles.z+angl.z), -sin(angles.z+angl.z), 0, sin(angles.z+angl.z), cos(angles.z+angl.z), 0, 0, 0, 1);
+    //Mat R3 = (Mat_<float>(3,3) << cos(angles.z), -sin(angles.z+angl.z), 0, sin(angles.z+angl.z), cos(angles.z+angl.z), 0, 0, 0, 1);
+    Mat R3 = (Mat_<float>(3,3) << cos(angles.z), -sin(angles.z), 0, sin(angles.z), cos(angles.z), 0, 0, 0, 1);
     Mat P33 = R1*(R3*P3);
     P33 = R*P33;
     legJoints.D = Point3f(P33.at<float>(0,0), P33.at<float>(0,1), P33.at<float>(0,2)) + legJoints.C;
@@ -112,8 +114,10 @@ int Leg::calculateAngles(Point3f angl)
     relAngles.y = angles.y;
     relAngles.z = b;
 
-    if(angles.x < -1.5 || angles.x > 1.5 || angles.y < -1.5 || angles.y > 1.5 || angles.z < -1.5 || angles.z > 1.5 || angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
+    //if(angles.x < -1.5 || angles.x > 1.5 || angles.y < -1.5 || angles.y > 1.5 || angles.z < -1.5 || angles.z > 1.5 || angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
+    if(angles.x != angles.x || angles.y != angles.y || angles.z!=angles.z)//nan detect
     {
+        calculateJointPoints(angl);
         return -1;
         /*angles = initAngles;
         calculateJointPoints(angl);

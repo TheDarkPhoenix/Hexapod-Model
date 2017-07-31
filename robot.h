@@ -9,7 +9,7 @@
 class Robot
 {
     private:
-        rect frame;
+        rect lFrame, gFrame;// l - lokalne g - globalne
         cv::Point3f position;
         cv::Point3f initPosition;
         cv::Point3f initAngles;
@@ -30,6 +30,8 @@ class Robot
         void move(cv::Point3f p);
         void rotate(cv::Point3f ang);
         void walk(cv::Point3f steps);
+        void walkC(cv::Point3f steps);
+        void walkRot(float angle);
 };
 
 #endif // ROBOT_H

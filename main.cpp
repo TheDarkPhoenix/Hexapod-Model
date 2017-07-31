@@ -12,17 +12,17 @@ using namespace cv;
 
 int main()
 {
-    View view1(1000, Point3f(0,0,0), Point3f(0, 0, -400));
+    View view1(1000, Point3f(0,0,0), Point3f(0, -300, 0));
     Mat screen(480, 640, CV_8UC3, Scalar(255,255,255));
 
     namedWindow("img");
-    int alfa = 180, beta = 180, gamma = 180;
+    int alfa = 105, beta = 180, gamma = 180;
     createTrackbar("alfa", "img", &alfa, 360);
     createTrackbar("beta", "img", &beta, 360);
     createTrackbar("gamma", "img", &gamma, 360);
     char key = 'm';
 
-    Robot rob(Point3f(0, 13 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+    Robot rob(Point3f(0, 17 ,100), Point3f(0,1,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
 
     float transStep = 1;
     float rotStep = 0.05;
@@ -60,10 +60,12 @@ int main()
                     rob.move(Point3f(0,0,-transStep));
                 break;
             case 'S':
-                rob.move(Point3f(0,transStep,0));
+                //rob.move(Point3f(0,transStep,0));
+                rob.walkRot(0.05);
                 break;
             case 'W':
-                rob.move(Point3f(0,-transStep,0));
+                rob.walkRot(-0.05);
+                //rob.move(Point3f(0,-transStep,0));
                 break;
 
             case '4':
@@ -84,6 +86,31 @@ int main()
             case '9':
                 rob.rotate(Point3f(0,0,-rotStep));
                 break;
+            /*case '8':
+                rob.walk(Point3f(0,0,walkStep));
+                break;
+            case '2':
+                rob.walk(Point3f(0,0,-walkStep));
+                break;
+            case '4':
+                rob.walk(Point3f(-walkStep,0,0));
+                break;
+            case '6':
+                rob.walk(Point3f(walkStep,0,0));
+                break;
+
+            case '7':
+                rob.walk(Point3f(-walkStep,0,walkStep));
+                break;
+            case '3':
+                rob.walk(Point3f(walkStep,0,-walkStep));
+                break;
+            case '9':
+                rob.walk(Point3f(walkStep,0,walkStep));
+                break;
+            case '1':
+                rob.walk(Point3f(-walkStep,0,-walkStep));
+                break;*/
         }
 
         screen = Mat(480, 640, CV_8UC3, Scalar(255,255,255));
