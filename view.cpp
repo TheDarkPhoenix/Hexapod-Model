@@ -1,7 +1,11 @@
 #include "view.h"
 #include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "opencv2/imgproc.hpp"
+
+#define SCALE 0.017453
 
 using namespace std;
 using namespace cv;
@@ -19,6 +23,28 @@ View::View(double f1, cv::Point3f angles, cv::Point3f translation)
     R = Rz*Ry*Rx;*/
     translationStep = 10;
     rotationStep = 0.1;
+
+    screen = Mat(480, 640, CV_8UC3, Scalar(255,255,255));
+
+    namedWindow("img");
+    alfaS = 105;
+    betaS = 180;
+    gammaS = 180;
+    createTrackbar("alfa", "img", &alfaS, 360);
+    createTrackbar("beta", "img", &betaS, 360);
+    createTrackbar("gamma", "img", &gammaS, 360);
+}
+
+void View::update(char key, Robot& rob)
+{
+    screen = Mat(480, 640, CV_8UC3, Scalar(255,255,255));
+    change(key);
+    setAngles(Point3f((alfaS-180)*SCALE, (betaS-180)*SCALE, (gammaS-180)*SCALE));
+    drawFloor();
+    drawAxis(Point3f(0,0,0));
+    drawAxis(rob.getPosition());
+    drawRobot(rob);
+    imshow("img", screen);
 }
 
 void View::rotateView(cv::Point3f angles)
@@ -50,7 +76,7 @@ void View::translateView(cv::Point3f translation)
     T.z += translation.z;*/
 }
 
-void View::drawPoint(cv::Mat& screen, cv::Point3f p1, Scalar color, int size1)
+void View::drawPoint(cv::Point3f p1, Scalar color, int size1)
 {
     float x = p1.x-T.x;
     float y = p1.y-T.y;
@@ -69,7 +95,7 @@ void View::drawPoint(cv::Mat& screen, cv::Point3f p1, Scalar color, int size1)
     circle(screen, Point(point1.x, point1.y), size1, Scalar(0, 0, 255), -1);
 }
 
-void View::drawLine(cv::Mat& screen, cv::Point3f p1, cv::Point3f p2, Scalar color, int thickness)
+void View::drawLine(cv::Point3f p1, cv::Point3f p2, Scalar color, int thickness)
 {
     float x = p1.x-T.x;
     float y = p1.y-T.y;
@@ -100,30 +126,30 @@ void View::drawLine(cv::Mat& screen, cv::Point3f p1, cv::Point3f p2, Scalar colo
     line(screen, point1, point2, color, thickness);
 }
 
-void View::drawRectangle(cv::Mat& screen, rect rec, Scalar color, int thickness)
+void View::drawRectangle(rect rec, Scalar color, int thickness)
 {
-    drawLine(screen, rec.dl, rec.dr, color, thickness);
-    drawLine(screen, rec.dr, rec.ur, color, thickness);
-    drawLine(screen, rec.ur, rec.ul, color, thickness);
-    drawLine(screen, rec.ul, rec.dl, color, thickness);
+    drawLine(rec.dl, rec.dr, color, thickness);
+    drawLine(rec.dr, rec.ur, color, thickness);
+    drawLine(rec.ur, rec.ul, color, thickness);
+    drawLine(rec.ul, rec.dl, color, thickness);
 }
 
-void View::drawRobot(cv::Mat& screen, Robot& rob)
+void View::drawRobot(Robot& rob)
 {
     int thickness = 2;
     int size1 = 4;
-    drawRectangle(screen, rob.getFrame(), Scalar(255,0,0), thickness);
+    drawRectangle(rob.getFrame(), Scalar(255,0,0), thickness);
     joints joint;
     for(int i=0; i<6; ++i)
     {
         joint = rob.getLegJoints(i);
-        drawLine(screen, joint.A, joint.B, Scalar(255,0,0), thickness);
-        drawLine(screen, joint.B, joint.C, Scalar(255,0,0), thickness);
-        drawLine(screen, joint.C, joint.D, Scalar(255,0,0), thickness);
-        drawPoint(screen, joint.A, Scalar(0,0,255), size1);
-        drawPoint(screen, joint.B, Scalar(0,0,255), size1);
-        drawPoint(screen, joint.C, Scalar(0,0,255), size1);
-        drawPoint(screen, joint.D, Scalar(0,0,255), size1);
+        drawLine(joint.A, joint.B, Scalar(255,0,0), thickness);
+        drawLine(joint.B, joint.C, Scalar(255,0,0), thickness);
+        drawLine(joint.C, joint.D, Scalar(255,0,0), thickness);
+        drawPoint(joint.A, Scalar(0,0,255), size1);
+        drawPoint(joint.B, Scalar(0,0,255), size1);
+        drawPoint(joint.C, Scalar(0,0,255), size1);
+        drawPoint(joint.D, Scalar(0,0,255), size1);
     }
 }
 
@@ -170,23 +196,23 @@ void View::change(char key)
     }
 }
 
-void View::drawFloor(cv::Mat& screen)
+void View::drawFloor()
 {
     int i;
     for(i = -10; i <= 10; ++i)
     {
-        drawLine(screen, Point3f(i*10,0,0), Point3f(i*10,0,200), Scalar(0,0,0));
+        drawLine(Point3f(i*10,0,0), Point3f(i*10,0,200), Scalar(0,0,0));
     }
     for(i = 0; i <= 20; ++i)
     {
-        drawLine(screen, Point3f(-100,0,i*10), Point3f(100,0,i*10), Scalar(0,0,0));
+        drawLine(Point3f(-100,0,i*10), Point3f(100,0,i*10), Scalar(0,0,0));
     }
 }
 
-void View::drawAxis(cv::Mat& screen, cv::Point3f pt)
+void View::drawAxis(cv::Point3f pt)
 {
-    drawPoint(screen, pt);
-    drawLine(screen, pt, pt+Point3f(10,0,0), Scalar(255,0,0), 2);//x niebieski
-    drawLine(screen, pt, pt+Point3f(0,10,0), Scalar(0,255,0), 2);//y zielony
-    drawLine(screen, pt, pt+Point3f(0,0,10), Scalar(0,0,255), 2);//z czerwony
+    drawPoint(pt);
+    drawLine(pt, pt+Point3f(10,0,0), Scalar(255,0,0), 2);//x niebieski
+    drawLine(pt, pt+Point3f(0,10,0), Scalar(0,255,0), 2);//y zielony
+    drawLine(pt, pt+Point3f(0,0,10), Scalar(0,0,255), 2);//z czerwony
 }

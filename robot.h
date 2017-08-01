@@ -6,6 +6,8 @@
 #include "leg.h"
 #include "maestro.h"
 
+class View;
+
 class Robot
 {
     private:
@@ -31,8 +33,8 @@ class Robot
         void move(cv::Point3f p);
         void rotate(cv::Point3f ang);
         void walk(cv::Point3f steps);
-        void walkC(cv::Point3f steps);
         void walkRot(float angle);
+        void walkC(cv::Point3f steps, View& view1);
 };
 
 #endif // ROBOT_H

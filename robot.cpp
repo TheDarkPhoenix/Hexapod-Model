@@ -1,4 +1,6 @@
 #include "robot.h"
+#include "view.h"
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <strstream>
 #include <unistd.h>
@@ -379,7 +381,7 @@ void Robot::walkRot(float angle)
     }
 }
 
-void Robot::walkC(Point3f steps)
+void Robot::walkC(Point3f steps, View& view1)
 {
     Point3f steps1 = steps;
     steps.x /= 2;
@@ -397,6 +399,8 @@ void Robot::walkC(Point3f steps)
     legs[2].setLegEnd(legs[2].getJoints().D+steps);
     legs[2].calculateAngles();
 
+    view1.update('b', *this);
+
     usleep(500000);
 
     ///2
@@ -410,6 +414,8 @@ void Robot::walkC(Point3f steps)
 
     legs[2].setLegEnd(legs[2].getJoints().D+steps);
     legs[2].calculateAngles();
+
+    view1.update('b', *this);
 
     usleep(500000);
 
@@ -426,6 +432,8 @@ void Robot::walkC(Point3f steps)
 
     legs[5].setLegEnd(legs[5].getJoints().D+steps);
     legs[5].calculateAngles();
+
+    view1.update('b', *this);
 
     usleep(500000);
 

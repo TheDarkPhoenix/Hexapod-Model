@@ -13,13 +13,7 @@ using namespace cv;
 int main()
 {
     View view1(1000, Point3f(0,0,0), Point3f(0, -300, 0));
-    Mat screen(480, 640, CV_8UC3, Scalar(255,255,255));
 
-    namedWindow("img");
-    int alfa = 105, beta = 180, gamma = 180;
-    createTrackbar("alfa", "img", &alfa, 360);
-    createTrackbar("beta", "img", &beta, 360);
-    createTrackbar("gamma", "img", &gamma, 360);
     char key = 'm';
 
     Robot rob(Point3f(0, 17 ,100), Point3f(0,1,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
@@ -49,13 +43,13 @@ int main()
                 break;
             case 'Q':
                 if(walking)
-                    rob.walk(Point3f(0,0,walkStep));
+                    rob.walkC(Point3f(0,0,walkStep), view1);
                 else
                     rob.move(Point3f(0,0,transStep));
                 break;
             case 'E':
                 if(walking)
-                    rob.walk(Point3f(0,0,-walkStep));
+                    rob.walkC(Point3f(0,0,-walkStep), view1);
                 else
                     rob.move(Point3f(0,0,-transStep));
                 break;
@@ -113,14 +107,7 @@ int main()
                 break;*/
         }
 
-        screen = Mat(480, 640, CV_8UC3, Scalar(255,255,255));
-        view1.change(key);
-        view1.setAngles(Point3f((alfa-180)*SCALE, (beta-180)*SCALE, (gamma-180)*SCALE));
-        view1.drawFloor(screen);
-        view1.drawAxis(screen, Point3f(0,0,0));
-        view1.drawAxis(screen, rob.getPosition());
-        view1.drawRobot(screen, rob);
-        imshow("img", screen);
+        view1.update(key, rob);
         key = waitKey(10);
     }
     return 0;
