@@ -3,7 +3,7 @@ Model matematyczny robota typu Hexapod.
 <p align="center">
   <img src="/img/img.png" width="600"/>
 </p>
-## Obsługa aplikacji:
+## Obsługa aplikacji
 
 ### Sterowanie kamerą
 w/a/s/d/q/e - translacja, trackbary - rotacja
