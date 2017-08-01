@@ -55,7 +55,7 @@ int main()
                 break;
             case 'S':
                 //rob.move(Point3f(0,transStep,0));
-                rob.walkRot(0.05);
+                rob.walkRotC(0.05, view1);
                 break;
             case 'W':
                 rob.walkRot(-0.05);

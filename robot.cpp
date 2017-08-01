@@ -401,7 +401,8 @@ void Robot::walkC(Point3f steps, View& view1)
 
     view1.update('b', *this);
 
-    usleep(500000);
+    //usleep(500000);
+    waitKey(250);
 
     ///2
     steps.y = 2;
@@ -417,7 +418,8 @@ void Robot::walkC(Point3f steps, View& view1)
 
     view1.update('b', *this);
 
-    usleep(500000);
+    //usleep(500000);
+    waitKey(250);
 
     ///3
     move(steps1);
@@ -435,7 +437,8 @@ void Robot::walkC(Point3f steps, View& view1)
 
     view1.update('b', *this);
 
-    usleep(500000);
+    //usleep(500000);
+    waitKey(250);
 
     ///4
     steps.y = 2;
@@ -449,5 +452,25 @@ void Robot::walkC(Point3f steps, View& view1)
     legs[5].setLegEnd(legs[5].getJoints().D+steps);
     legs[5].calculateAngles();
 
-    usleep(500000);
+    //usleep(500000);
+    waitKey(250);
+}
+
+void Robot::walkRotC(float angle, View& view1)
+{
+    walkRot(angle);
+    view1.update('b', *this);
+    waitKey(250);
+
+    walkRot(angle);
+    view1.update('b', *this);
+    waitKey(250);
+
+    walkRot(angle);
+    view1.update('b', *this);
+    waitKey(250);
+
+    walkRot(angle);
+    view1.update('b', *this);
+    waitKey(250);
 }
