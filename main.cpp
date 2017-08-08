@@ -22,14 +22,14 @@ int main()
     createTrackbar("gamma", "img", &gamma, 360);
     char key = 'm';
 
-    Robot rob(Point3f(0, 13 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+    Robot rob(Point3f(0, 15 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
 
     float transStep = 1;
     float rotStep = 0.05;
 
-    bool walking = true;
+    bool walking = false;
 
-    float walkStep = 3;
+    float walkStep = 5;
 
     while(key != 27)
     {

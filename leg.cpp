@@ -90,7 +90,7 @@ int Leg::calculateAngles(Point3f angl)
     //newPos.x = abs(newPos.x);
     //newPos.y = abs(newPos.y);
     //newPos.z = abs(newPos.z);
-    cout << newPos << endl;
+    //cout << newPos << endl;
     float lx = lengths.x*cos(angl.z);
 
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
@@ -251,9 +251,9 @@ void Leg::calculateServoSignals()
         return;
     }
 
+    maestroSetTarget(fd, servos.z, sygnalC);
     maestroSetTarget(fd, servos.x, sygnalA);
     maestroSetTarget(fd, servos.y, sygnalB);
-    maestroSetTarget(fd, servos.z, sygnalC);
 
     close(fd);
 }
