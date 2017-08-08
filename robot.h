@@ -23,6 +23,7 @@ class Robot
         int walkingStep;
         Maestro device;
         cv::Point3f stepsl[6];
+        int delay;
 
     public:
         Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::Point3f leglengths);

@@ -1,11 +1,16 @@
 #include "maestro.h"
 
+#define RASP
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <cmath>
+#include <iostream>
 
-Maestro::Maestro()
+using namespace std;
+
+Maestro::Maestro() : device("/dev/ttyAMA0")
 {
     #ifdef RASP
     fd = open(device, O_RDWR | O_NOCTTY);
@@ -54,7 +59,9 @@ Maestro::~Maestro()
 
 int Maestro::setTarget(unsigned char channel, unsigned short target)
 {
+    cout << 1 << endl;
     #ifdef RASP
+    cout << "1" << endl;
     unsigned char command[] = {0xAA, 0xC, 0x04, channel, target & 0x7F, target >> 7 & 0x7F};
     if (write(fd, command, sizeof(command)) == -1)
     {

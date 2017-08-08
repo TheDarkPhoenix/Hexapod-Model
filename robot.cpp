@@ -18,6 +18,7 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
     initPosition = position;
     initAngles = angles;
     walkingStep = 0;
+    delay = 500;
 
     lFrame.dl = Point3f(-width/2,0,-length/2);
     lFrame.dr = Point3f(width/2,0,-length/2);
@@ -342,6 +343,10 @@ void Robot::walkRot(float angle)
     else if(walkingStep == 2)
     {
         rotate(Point3f(0,angle,0));
+        ++walkingStep;
+    }
+    else if(walkingStep == 3)
+    {
         for(int i = 0; i < 6; ++i)
         {
             Point3f g11 = (legs[i].getJoints().D);
@@ -364,7 +369,7 @@ void Robot::walkRot(float angle)
 
         ++walkingStep;
     }
-    else if(walkingStep == 3)
+    else if(walkingStep == 4)
     {
         stepsl[3].y = 2;
         stepsl[1].y = 2;
@@ -405,7 +410,7 @@ void Robot::walkC(Point3f steps, View& view1)
     view1.update('b', *this);
 
     //usleep(500000);
-    waitKey(250);
+    waitKey(delay);
 
     ///2
     steps.y = 2;
@@ -422,11 +427,15 @@ void Robot::walkC(Point3f steps, View& view1)
     view1.update('b', *this);
 
     //usleep(500000);
-    waitKey(250);
+    waitKey(delay);
 
     ///3
     move(steps1);
 
+    view1.update('b', *this);
+
+    //usleep(500000);
+    waitKey(delay);
     steps.y = -2;
 
     legs[3].setLegEnd(legs[3].getJoints().D+steps);
@@ -441,7 +450,7 @@ void Robot::walkC(Point3f steps, View& view1)
     view1.update('b', *this);
 
     //usleep(500000);
-    waitKey(250);
+    waitKey(delay);
 
     ///4
     steps.y = 2;
@@ -456,24 +465,28 @@ void Robot::walkC(Point3f steps, View& view1)
     legs[5].calculateAngles();
 
     //usleep(500000);
-    waitKey(250);
+    waitKey(delay);
 }
 
 void Robot::walkRotC(float angle, View& view1)
 {
     walkRot(angle);
     view1.update('b', *this);
-    waitKey(250);
+    waitKey(delay);
 
     walkRot(angle);
     view1.update('b', *this);
-    waitKey(250);
+    waitKey(delay);
 
     walkRot(angle);
     view1.update('b', *this);
-    waitKey(250);
+    waitKey(delay);
 
     walkRot(angle);
     view1.update('b', *this);
-    waitKey(250);
+    waitKey(delay);
+
+    walkRot(angle);
+    view1.update('b', *this);
+    waitKey(delay);
 }

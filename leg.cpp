@@ -127,7 +127,7 @@ int Leg::calculateAngles()
 
     calculateJointPoints();
     //cout << angles << endl;
-    //calculateServoSignals();
+    calculateServoSignals();
     return 1;
 }
 
