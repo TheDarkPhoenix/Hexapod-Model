@@ -21,9 +21,9 @@ int main()
     float transStep = 1;
     float rotStep = 0.05;
 
-    bool walking = true;
+    bool walking = false;
 
-    float walkStep = 3;
+    float walkStep = 5;
 
     ///Tryby:
     ///1 - stanie w miejscu i ruch translacyjny
@@ -124,10 +124,10 @@ int main()
                     rob.walkC(Point3f(0,0,-walkStep), view1);
                     break;
                 case 'E':
-                    rob.walkRotC(0.05, view1);
+                    rob.walkRotC(0.18, view1);
                     break;
                 case 'Q':
-                    rob.walkRotC(-0.05, view1);
+                    rob.walkRotC(-0.18, view1);
                     break;
             }
         }

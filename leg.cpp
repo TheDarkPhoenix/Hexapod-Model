@@ -93,6 +93,7 @@ int Leg::calculateAngles()
     //newPos.y = abs(newPos.y);
     //newPos.z = abs(newPos.z);
     //cout << newPos << endl;
+
     float lx = lengths.x;
 
     float L = sqrt(pow(newPos.x,2)+pow(newPos.z,2));
@@ -126,7 +127,7 @@ int Leg::calculateAngles()
 
     calculateJointPoints();
     //cout << angles << endl;
-    //calculateServoSignals();
+    calculateServoSignals();
     return 1;
 }
 
