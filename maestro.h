@@ -1,7 +1,7 @@
 #ifndef MAESTRO_H
 #define MAESTRO_H
 
-#define RASP
+//#define RASP
 
 #ifdef RASP
 #include <termios.h>

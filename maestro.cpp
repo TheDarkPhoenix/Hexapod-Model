@@ -1,6 +1,6 @@
 #include "maestro.h"
 
-#define RASP
+//#define RASP
 
 #include <fcntl.h>
 #include <stdio.h>
@@ -59,7 +59,6 @@ Maestro::~Maestro()
 
 int Maestro::setTarget(unsigned char channel, unsigned short target)
 {
-    cout << 1 << endl;
     #ifdef RASP
     cout << "1" << endl;
     unsigned char command[] = {0xAA, 0xC, 0x04, channel, target & 0x7F, target >> 7 & 0x7F};

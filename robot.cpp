@@ -490,3 +490,50 @@ void Robot::walkRotC(float angle, View& view1)
     view1.update('b', *this);
     waitKey(delay);
 }
+
+void Robot::walk2C(Point3f steps, View& view1)
+{
+    ///najpierw chodzenie tylko do przodu
+    /// parabola -h*x(x-z)
+    Point3f steps1 = steps;
+    float z = steps1.z;
+    float a = (8)/(z*z);
+    float di = 0.08;
+    for (double i = 0; i < z; i += di)
+    {
+        steps = Point3f(0, 2*a*i*di-a*z*di, di);
+        legs[0].setLegEnd(legs[0].getJoints().D+steps);
+        legs[0].calculateAngles();
+
+        legs[4].setLegEnd(legs[4].getJoints().D+steps);
+        legs[4].calculateAngles();
+
+        legs[2].setLegEnd(legs[2].getJoints().D+steps);
+        legs[2].calculateAngles();
+
+        move(Point3f(0,0,di/2));
+
+        view1.update('b', *this);
+
+        waitKey(1);
+    }
+
+    for (double i = 0; i < z; i += di)
+    {
+        steps = Point3f(0, 2*a*i*di-a*z*di, di);
+        legs[3].setLegEnd(legs[3].getJoints().D+steps);
+        legs[3].calculateAngles();
+
+        legs[1].setLegEnd(legs[1].getJoints().D+steps);
+        legs[1].calculateAngles();
+
+        legs[5].setLegEnd(legs[5].getJoints().D+steps);
+        legs[5].calculateAngles();
+
+        move(Point3f(0,0,di/2));
+
+        view1.update('b', *this);
+
+        waitKey(1);
+    }
+}

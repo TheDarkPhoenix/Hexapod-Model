@@ -131,6 +131,30 @@ int main()
                     break;
             }
         }
+        else if(mode == 5)
+        {
+            switch(key)
+            {
+                case 'D':
+                    rob.walkC(Point3f(walkStep,0,0), view1);
+                    break;
+                case 'A':
+                    rob.walkC(Point3f(-walkStep,0,0), view1);
+                    break;
+                case 'W':
+                    rob.walk2C(Point3f(0,0,walkStep), view1);
+                    break;
+                case 'S':
+                    rob.walk2C(Point3f(0,0,-walkStep), view1);
+                    break;
+                case 'E':
+                    rob.walkRotC(0.18, view1);
+                    break;
+                case 'Q':
+                    rob.walkRotC(-0.18, view1);
+                    break;
+            }
+        }
 
         switch(key)
         {
@@ -145,6 +169,9 @@ int main()
                 break;
             case '4':
                 mode = 4;
+                break;
+            case '5':
+                mode = 5;
                 break;
         }
         view1.update(key, rob);
