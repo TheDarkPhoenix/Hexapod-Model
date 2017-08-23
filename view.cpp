@@ -85,7 +85,7 @@ void View::drawPoint(cv::Point3f p1, Scalar color, int size1)
     //rzutowanie punktu tak jak na wikipedii
     Point3f p11;
     p11.x = cos(beta)*(sin(gamma)*y+cos(gamma)*x)-sin(beta)*z;
-    p11.y = sin(alfa)*(cos(gamma)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
+    p11.y = sin(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
     p11.z = cos(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))-sin(alfa)*(cos(gamma)*y-sin(gamma)*x);
 
     Point point1;
@@ -103,7 +103,7 @@ void View::drawLine(cv::Point3f p1, cv::Point3f p2, Scalar color, int thickness)
 
     Point3f p11;
     p11.x = cos(beta)*(sin(gamma)*y+cos(gamma)*x)-sin(beta)*z;
-    p11.y = sin(alfa)*(cos(gamma)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
+    p11.y = sin(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
     p11.z = cos(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))-sin(alfa)*(cos(gamma)*y-sin(gamma)*x);
 
     Point point1;
@@ -116,7 +116,7 @@ void View::drawLine(cv::Point3f p1, cv::Point3f p2, Scalar color, int thickness)
 
     Point3f p22;
     p22.x = cos(beta)*(sin(gamma)*y+cos(gamma)*x)-sin(beta)*z;
-    p22.y = sin(alfa)*(cos(gamma)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
+    p22.y = sin(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))+cos(alfa)*(cos(gamma)*y-sin(gamma)*x);
     p22.z = cos(alfa)*(cos(beta)*z + sin(beta)*(sin(gamma)*y + cos(gamma)*x))-sin(alfa)*(cos(gamma)*y-sin(gamma)*x);
 
     Point point2;
