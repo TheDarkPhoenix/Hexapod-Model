@@ -28,10 +28,11 @@ int main()
     ///Tryby:
     ///1 - stanie w miejscu i ruch translacyjny
     ///2 - stanie w miesjscu i obroty
-    ///3 - poruszanie si� manualne
-    ///4 - poruszanie si� automatyczne
+    ///3 - poruszanie siê manualne
+    ///4 - poruszanie siê automatyczne
+    ///5 - automatyczne z poprawioną płynnością
 
-    int mode = 1;
+    int mode = 6;
 
     while(key != 27)
     {
@@ -155,6 +156,30 @@ int main()
                     break;
             }
         }
+        else if(mode == 6)
+        {
+            switch(key)
+            {
+                case 'D':
+                    rob.walk3C(Point3f(walkStep,0,0), view1);
+                    break;
+                case 'A':
+                    rob.walk3C(Point3f(-walkStep,0,0), view1);
+                    break;
+                case 'W':
+                    rob.walk3C(Point3f(0,0,walkStep), view1);
+                    break;
+                case 'S':
+                    rob.walk3C(Point3f(0,0,-walkStep), view1);
+                    break;
+                case 'E':
+                    rob.walk3C(Point3f(-walkStep,0,-walkStep), view1);
+                    break;
+                case 'Q':
+                    rob.walk3C(Point3f(walkStep,0,walkStep), view1);
+                    break;
+            }
+        }
 
         switch(key)
         {
@@ -172,6 +197,9 @@ int main()
                 break;
             case '5':
                 mode = 5;
+                break;
+            case '6':
+                mode = 6;
                 break;
         }
         view1.update(key, rob);

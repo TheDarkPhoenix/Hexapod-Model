@@ -499,9 +499,11 @@ void Robot::walk2C(Point3f steps, View& view1)
     float z = steps1.z;
     float a = (8)/(z*z);
     float di = 0.08;
+    float sdi = (z<0)?-di:di;
+    z = abs(z);
     for (double i = 0; i < z; i += di)
     {
-        steps = Point3f(0, 2*a*i*di-a*z*di, di);
+        steps = Point3f(0, 2*a*i*di-a*z*di, sdi);
         legs[0].setLegEnd(legs[0].getJoints().D+steps);
         legs[0].calculateAngles();
 
@@ -511,7 +513,7 @@ void Robot::walk2C(Point3f steps, View& view1)
         legs[2].setLegEnd(legs[2].getJoints().D+steps);
         legs[2].calculateAngles();
 
-        move(Point3f(0,0,di/2));
+        move(Point3f(0,0,sdi/2));
 
         view1.update('b', *this);
 
@@ -520,7 +522,7 @@ void Robot::walk2C(Point3f steps, View& view1)
 
     for (double i = 0; i < z; i += di)
     {
-        steps = Point3f(0, 2*a*i*di-a*z*di, di);
+        steps = Point3f(0, 2*a*i*di-a*z*di, sdi);
         legs[3].setLegEnd(legs[3].getJoints().D+steps);
         legs[3].calculateAngles();
 
@@ -530,7 +532,77 @@ void Robot::walk2C(Point3f steps, View& view1)
         legs[5].setLegEnd(legs[5].getJoints().D+steps);
         legs[5].calculateAngles();
 
-        move(Point3f(0,0,di/2));
+        move(Point3f(0,0,sdi/2));
+
+        view1.update('b', *this);
+
+        waitKey(1);
+    }
+}
+
+void Robot::walk3C(Point3f steps, View& view1)
+{
+    ///najpierw chodzenie tylko do przodu
+    /// parabola -h*x(x-z)
+    Point3f steps1 = steps;
+    float x = steps1.x;
+    float y = steps1.y;
+    float z = steps1.z;
+
+    float x2 = sqrt(x*x + z*z);
+
+    float a = (8)/(x2*x2);
+    float di = 0.08;
+    float dz = 0, dx = 0;
+
+    if(z == 0)
+    {
+        dx = (x<0)?(-di):di;
+    }
+    else
+    {
+        dz = di*sqrt((x/z)*(x/z)+1);
+        dx = (x/z)*dz;
+
+        dz = (z<0)?(-abs(dz)):(abs(dz));
+        dx = (x<0)?(-abs(dx)):(abs(dx));
+    }
+
+    //cout << dx << ' ' << dz << endl;
+    //cout << x << ' ' << z << ' ' << x2 << endl;
+
+    for (double i = 0; i < x2; i += di)
+    {
+        steps = Point3f(dx, 2*a*i*di-a*x2*di, dz);
+        legs[0].setLegEnd(legs[0].getJoints().D+steps);
+        legs[0].calculateAngles();
+
+        legs[4].setLegEnd(legs[4].getJoints().D+steps);
+        legs[4].calculateAngles();
+
+        legs[2].setLegEnd(legs[2].getJoints().D+steps);
+        legs[2].calculateAngles();
+
+        move(Point3f(dx/2,0,dz/2));
+
+        view1.update('b', *this);
+
+        waitKey(1);
+    }
+
+    for (double i = 0; i < x2; i += di)
+    {
+        steps = Point3f(dx, 2*a*i*di-a*x2*di, dz);
+        legs[3].setLegEnd(legs[3].getJoints().D+steps);
+        legs[3].calculateAngles();
+
+        legs[1].setLegEnd(legs[1].getJoints().D+steps);
+        legs[1].calculateAngles();
+
+        legs[5].setLegEnd(legs[5].getJoints().D+steps);
+        legs[5].calculateAngles();
+
+        move(Point3f(dx/2,0,dz/2));
 
         view1.update('b', *this);
 
