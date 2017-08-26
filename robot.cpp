@@ -609,3 +609,243 @@ void Robot::walk3C(Point3f steps, View& view1)
         waitKey(1);
     }
 }
+
+void Robot::walkRot3C(float angle, View& view1)
+{
+
+    /*Mat Rx1 = (Mat_<float>(3,3) << cos(angle), 0, sin(angle), 0, 1, 0, -sin(angle), 0, cos(angle));
+
+    if(walkingStep == 0)
+    {
+
+        for(int i = 0; i < 6; ++i)
+        {
+            Point3f g11 = (legs[i].getJoints().D);
+            Mat P1 = (Mat_<float>(3,1) << g11.x, g11.y, g11.z);
+            Mat P11 = Rx1*P1;
+            Point3f g12 = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2));
+            stepsl[i] = g12 - g11;
+            stepsl[i].x /= 2;
+            stepsl[i].y = -2;
+            stepsl[i].z /= 2;
+        }
+
+        legs[0].setLegEnd(legs[0].getJoints().D+stepsl[0]);
+        legs[0].calculateAngles();
+
+        legs[4].setLegEnd(legs[4].getJoints().D+stepsl[4]);
+        legs[4].calculateAngles();
+
+        legs[2].setLegEnd(legs[2].getJoints().D+stepsl[2]);
+        legs[2].calculateAngles();
+
+        ++walkingStep;
+    }
+    else if(walkingStep == 1)
+    {
+        stepsl[0].y = 2;
+        stepsl[4].y = 2;
+        stepsl[2].y = 2;
+
+        legs[0].setLegEnd(legs[0].getJoints().D+stepsl[0]);
+        legs[0].calculateAngles();
+
+        legs[4].setLegEnd(legs[4].getJoints().D+stepsl[4]);
+        legs[4].calculateAngles();
+
+        legs[2].setLegEnd(legs[2].getJoints().D+stepsl[2]);
+        legs[2].calculateAngles();
+
+        ++walkingStep;
+    }
+    else if(walkingStep == 2)
+    {
+        rotate(Point3f(0,angle,0));
+
+        Mat Ry = (Mat_<float>(3,3) << cos(-angle), 0, sin(-angle), 0, 1, 0, -sin(-angle), 0, cos(-angle));
+        for(int i = 0; i < 6; ++i)
+        {
+            Mat P1 = (Mat_<float>(3,1) << stepsl[i].x, stepsl[i].y, stepsl[i].z);
+            Mat P11 = Ry*P1;
+            stepsl[i]  = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2));
+            stepsl[i].y = -2;
+        }
+
+        ++walkingStep;
+    }
+    else if(walkingStep == 3)
+    {
+
+        legs[3].setLegEnd(legs[3].getJoints().D+stepsl[3]);
+        legs[3].calculateAngles();
+
+        legs[1].setLegEnd(legs[1].getJoints().D+stepsl[1]);
+        legs[1].calculateAngles();
+
+        legs[5].setLegEnd(legs[5].getJoints().D+stepsl[5]);
+        legs[5].calculateAngles();
+
+        ++walkingStep;
+    }
+    else if(walkingStep == 4)
+    {
+        stepsl[3].y = 2;
+        stepsl[1].y = 2;
+        stepsl[5].y = 2;
+
+        legs[3].setLegEnd(legs[3].getJoints().D+stepsl[3]);
+        legs[3].calculateAngles();
+
+        legs[1].setLegEnd(legs[1].getJoints().D+stepsl[1]);
+        legs[1].calculateAngles();
+
+        legs[5].setLegEnd(legs[5].getJoints().D+stepsl[5]);
+        legs[5].calculateAngles();
+
+        walkingStep = 0;
+
+    }*/
+
+    /*Point3f g11 = (legs[i].getJoints().D);
+    Mat P1 = (Mat_<float>(3,1) << g11.x, g11.y, g11.z);
+    Mat P11 = Rx1*P1;
+    Point3f g12 = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2));
+    stepsl[i] = g12 - g11;
+
+    float x = steps1.x;
+    float y = steps1.y;
+    float z = steps1.z;
+
+    float x2 = sqrt(x*x + z*z);
+
+    float a = (8)/(x2*x2);
+    float di = 0.08;
+    float dz = 0, dx = 0;
+
+    if(z == 0)
+    {
+        dx = (x<0)?(-di):di;
+    }
+    else
+    {
+        dz = di*sqrt((x/z)*(x/z)+1);
+        dx = (x/z)*dz;
+
+        dz = (z<0)?(-abs(dz)):(abs(dz));
+        dx = (x<0)?(-abs(dx)):(abs(dx));
+    }*/
+
+    Mat Rx1 = (Mat_<float>(3,3) << cos(angle), 0, sin(angle), 0, 1, 0, -sin(angle), 0, cos(angle));
+
+    float da = 0.01;
+
+    Point3f steps1, steps2;
+
+    Point3f g11 = (legs[0].getJoints().D);
+    Mat P1 = (Mat_<float>(3,1) << g11.x, g11.y, g11.z);
+    Mat P11 = Rx1*P1;
+    Point3f g12 = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2));
+    steps1 = g12 - g11;
+
+    float x = steps1.x;
+    float y = steps1.y;
+    float z = steps1.z;
+
+    float x2 = sqrt(x*x + z*z)/2;
+
+    float a = (8)/(x2*x2);
+
+    float di = x2*(da/angle)*2;
+
+    float dz = 0, dx = 0;
+    if(z == 0)
+    {
+        dx = (x<0)?(-di):di;
+    }
+    else
+    {
+        dz = di*sqrt((x/z)*(x/z)+1);
+        dx = (x/z)*dz;
+
+        /*dz = (z<0)?(-abs(dz)):(abs(dz));
+        dx = (x<0)?(-abs(dx)):(abs(dx));*/
+    }
+
+    float phi = atan(z/x);
+    double i = 0;
+
+    Point3f steps;
+
+    for (double j = 0; j < angle/2; j += da)
+    {
+        steps = Point3f(dx, 2*a*i*di-a*x2*di, -dz);
+        legs[0].setLegEnd(legs[0].getJoints().D+steps);
+        legs[0].calculateAngles();
+        steps = Point3f(-dx, 2*a*i*di-a*x2*di, -dz);
+        legs[2].setLegEnd(legs[2].getJoints().D+steps);
+        legs[2].calculateAngles();
+
+        rotate(Point3f(0,da,0));
+
+        float t = 1/tan(phi+j);
+
+        dz = di*sqrt((t)*(t)+1);
+        dx = (t)*dz;
+
+        dz = abs(dz);
+        dx = abs(dx);
+
+        /*dz = (z<0)?(-abs(dz)):(abs(dz));
+        dx = (x<0)?(-abs(dx)):(abs(dx));*/
+
+        view1.update('b', *this);
+
+        i+=di;
+
+        waitKey(1);
+    }
+    i = 0;
+    for (double j = 0; j < angle/2; j += da)
+    {
+        steps = Point3f(dx, 2*a*i*di-a*x2*di, dz);
+        legs[3].setLegEnd(legs[3].getJoints().D+steps);
+        legs[3].calculateAngles();
+
+        steps = Point3f(-dx, 2*a*i*di-a*x2*di, dz);
+        legs[5].setLegEnd(legs[5].getJoints().D+steps);
+        legs[5].calculateAngles();
+
+        rotate(Point3f(0,da,0));
+        float t = 1/tan(phi+j);
+
+        dz = di*sqrt((t)*(t)+1);
+        dx = (t)*dz;
+
+        dz = abs(dz);
+        dx = abs(dx);
+
+        /*dz = (z<0)?(-abs(dz)):(abs(dz));
+        dx = (x<0)?(-abs(dx)):(abs(dx));*/
+        view1.update('b', *this);
+        i+=di;
+        waitKey(1);
+    }
+
+
+
+    /*else if(walkingStep == 2)
+    {
+        rotate(Point3f(0,angle,0));
+
+        Mat Ry = (Mat_<float>(3,3) << cos(-angle), 0, sin(-angle), 0, 1, 0, -sin(-angle), 0, cos(-angle));
+        for(int i = 0; i < 6; ++i)
+        {
+            Mat P1 = (Mat_<float>(3,1) << stepsl[i].x, stepsl[i].y, stepsl[i].z);
+            Mat P11 = Ry*P1;
+            stepsl[i]  = Point3f(P11.at<float>(0,0), P11.at<float>(0,1), P11.at<float>(0,2));
+            stepsl[i].y = -2;
+        }
+
+        ++walkingStep;
+    }*/
+}

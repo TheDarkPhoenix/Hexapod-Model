@@ -173,10 +173,10 @@ int main()
                     rob.walk3C(Point3f(0,0,-walkStep), view1);
                     break;
                 case 'E':
-                    rob.walk3C(Point3f(-walkStep,0,-walkStep), view1);
+                    rob.walkRot3C(0.18, view1);
                     break;
                 case 'Q':
-                    rob.walk3C(Point3f(walkStep,0,walkStep), view1);
+                    rob.walkRot3C(-0.18, view1);
                     break;
             }
         }

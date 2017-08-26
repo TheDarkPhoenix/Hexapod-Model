@@ -40,6 +40,7 @@ class Robot
         void walk2C(cv::Point3f steps, View& view1);
         void walkRot2C(float angle, View& view1);
         void walk3C(cv::Point3f steps, View& view1);
+        void walkRot3C(float angle, View& view1);
 
 };
 
