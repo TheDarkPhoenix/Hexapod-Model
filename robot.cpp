@@ -712,7 +712,7 @@ void Robot::walkRot3C(float angle, View& view1)
     Point3d steps1, steps2;
     Point3d g11, g12;
     Mat P1, P11;
-    double x,y,z;
+    double x,z;
     Point3f step1;
     double j=0;
 
@@ -725,7 +725,6 @@ void Robot::walkRot3C(float angle, View& view1)
     double dx[6], dz[6];
     double phi[6];
     double i1[6];
-    double t[6];
 
     for (int i = 0; i < 6; ++i)
     {
@@ -736,7 +735,6 @@ void Robot::walkRot3C(float angle, View& view1)
         steps1 = g12 - g11;
 
         x = steps1.x;
-        y = steps1.y;
         z = steps1.z;
 
         x2[i] = sqrt(x*x + z*z);
@@ -754,8 +752,6 @@ void Robot::walkRot3C(float angle, View& view1)
 
     int N = angle/(2*da);
 
-    double y123[6]={0};
-
     for (int n = 0; n < N; ++n)
     {
         j+=da;
@@ -764,14 +760,12 @@ void Robot::walkRot3C(float angle, View& view1)
         {
             i1[k] += di[k];
 
-            step1 = Point3f(dx[k], -(legs[k].getJoints().D.y - 16.3) + a[k]*i1[k]*(i1[k]-x2[k]), dz[k]);
+            step1 = Point3f(dx[k], -(legs[k].getJoints().D.y - 16.3) - a[k]*i1[k]*(i1[k]-x2[k]), dz[k]);
             legs[k].setLegEnd(legs[k].getJoints().D+step1);
             legs[k].calculateAngles();
 
             dx[k] = di[k]*cos(phi[k]+j);
             dz[k] = di[k]*sin(phi[k]+j);
-
-
         }
 
         rotate(Point3f(0,da,0));
@@ -795,7 +789,7 @@ void Robot::walkRot3C(float angle, View& view1)
         {
             i1[k] += di[k];
 
-            step1 = Point3f(dx[k], -(legs[k].getJoints().D.y - 16.3) + a[k]*i1[k]*(i1[k]-x2[k]) , dz[k]);
+            step1 = Point3f(dx[k], -(legs[k].getJoints().D.y - 16.3) - a[k]*i1[k]*(i1[k]-x2[k]) , dz[k]);
             legs[k].setLegEnd(legs[k].getJoints().D+step1);
             legs[k].calculateAngles();
 
