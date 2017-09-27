@@ -721,7 +721,7 @@ void Robot::walkRot3C(float angle, View& view1)
     double i1, i2;
     double t1, t2;
     Point3f step1, step2;
-    double j;
+    double j=0;
 
     Rx1 = (Mat_<double>(3,3) << cos(angle), 0, sin(angle), 0, 1, 0, -sin(angle), 0, cos(angle));
     da = 0.01;
@@ -733,18 +733,17 @@ void Robot::walkRot3C(float angle, View& view1)
     g12 = Point3f(P11.at<double>(0,0), P11.at<double>(0,1), P11.at<double>(0,2));
     steps1 = g12 - g11;
 
+    cout << steps1 << endl;
+
     x = steps1.x;
     y = steps1.y;
     z = steps1.z;
 
     x21 = sqrt(x*x + z*z);
-    a1 = (8)/(x21*x21);
+    a1 = (-4*2)/(x21*x21);
     di1 = x21*(da/angle)*2;
-    phi1 = atan(z/x);
+    phi1 = atan2(z, x);
 
-    /*t1 = 1/tan(phi1);
-    dz1 = di1*sqrt((t1)*(t1)+1);
-    dx1 = -(t1)*dz1;*/
     dx1 = di1*cos(phi1);
     dz1 = di1*sin(phi1);
 
@@ -762,61 +761,89 @@ void Robot::walkRot3C(float angle, View& view1)
     z = steps2.z;
 
     x22 = sqrt(x*x + z*z);
-    a2 = (8)/(x22*x22);
+    a2 = (-4*2)/(x22*x22);//ymax = 2[cm]
     di2 = x22*(da/angle)*2;
-    phi2 = atan(z/x);
+    phi2 = atan2(z, x);
 
-    /*t2 = 1/tan(phi2);
-    dz2 = di2*sqrt((t2)*(t2)+1);
-    dx2 = -(t2)*dz2;*/
     dx2 = di2*cos(phi2);
     dz2 = di2*sin(phi2);
 
     i2 = 0;
 
-    for (j = 0; j < angle/2; j += da)
+    /*for (int i = 0; i < 6; ++i)
     {
-        step1 = Point3f(dx1, 2*a1*i1*di1-a1*x21*di1, dz1);
+        g11 = (legs[i].getJoints().D);
+        P1 = (Mat_<double>(3,1) << g11.x, g11.y, g11.z);
+        P11 = Rx1*P1;
+        g12 = Point3f(P11.at<double>(0,0), P11.at<double>(0,1), P11.at<double>(0,2));
+        steps1 = g12 - g11;
+
+        x = steps1.x;
+        y = steps1.y;
+        z = steps1.z;
+
+        x21 = sqrt(x*x + z*z);
+        a1 = (-4*2)/(x21*x21);
+        di1 = x21*(da/angle)*2;
+        phi1 = atan2(z, x);
+
+        dx1 = di1*cos(phi1);
+        dz1 = di1*sin(phi1);
+
+        i1 = 0;
+
+        ///dla nóg po œrodku: 1,2
+        g11 = (legs[1].getJoints().D);
+        P1 = (Mat_<double>(3,1) << g11.x, g11.y, g11.z);
+        P11 = Rx1*P1;
+        g12 = Point3f(P11.at<double>(0,0), P11.at<double>(0,1), P11.at<double>(0,2));
+        steps2 = g12 - g11;
+
+        x = steps2.x;
+        y = steps2.y;
+        z = steps2.z;
+
+        x22 = sqrt(x*x + z*z);
+        a2 = (-4*2)/(x22*x22);//ymax = 2[cm]
+        di2 = x22*(da/angle)*2;
+        phi2 = atan2(z, x);
+
+        dx2 = di2*cos(phi2);
+        dz2 = di2*sin(phi2);
+
+        i2 = 0;
+    }*/
+
+    j = 0;
+
+    int N = angle/(2*da);
+
+    for (int n = 0; n < N; ++n)
+    {
+
+        //cout << j << endl;
+        //cout << dx1 << ' ' << -2*a1*i1*di1+a1*x21*di1 << ' ' << dz1 << endl;
+        j+=da;
+
+        step1 = Point3f(dx1, -2*a1*i1*di1+a1*x21*di1, dz1);
         legs[0].setLegEnd(legs[0].getJoints().D+step1);
         legs[0].calculateAngles();
 
-        step1 = Point3f(-dx1, 2*a1*i1*di1-a1*x21*di1, dz1);
+        step1 = Point3f(-dx1, -2*a1*i1*di1+a1*x21*di1, dz1);
         legs[2].setLegEnd(legs[2].getJoints().D+step1);
         legs[2].calculateAngles();
 
-        step2 = Point3f(dx2, 2*a2*i2*di2-a2*x22*di2, dz2);
+        step2 = Point3f(-dx2, -2*a2*i2*di2+a2*x22*di2, -dz2);
         legs[4].setLegEnd(legs[4].getJoints().D+step2);
         legs[4].calculateAngles();
 
         rotate(Point3f(0,da,0));
 
-        /*t1 = 1/tan(phi1+j);
-
-        dz1 = di1*sqrt((t1)*(t1)+1);
-        dx1 = -(t1)*dz1;
-        cout << dx1 << ' ' << dz1 << ' ';*/
-
         dx1 = di1*cos(phi1+j);
         dz1 = di1*sin(phi1+j);
-        //cout << dx1 << ' ' << dz1 << endl;
-
-        /*dz1 = (t1<0)?di1*sqrt((t1)*(t1)+1):-di1*sqrt((t1)*(t1)+1);
-        dx1 = -(t1)*dz1;*/
-
-        /*dz1 = abs(dz1);
-        dx1 = abs(dx1);*/
-
-
-        /*t2 = 1/tan(phi2+j);
-
-        dz2 = di2*sqrt((t2)*(t2)+1);
-        dx2 = -(t2)*dz2;*/
 
         dx2 = di2*cos(phi2+j);
         dz2 = di2*sin(phi2+j);
-
-        /*dz2 = abs(dz2);
-        dx2 = abs(dx2);*/
 
         view1.update('b', *this);
 
@@ -825,45 +852,47 @@ void Robot::walkRot3C(float angle, View& view1)
 
         waitKey(1);
     }
+
+    step1 = Point3f(0, -2*a1*i1*di1+a1*x21*di1, 0);
+    legs[0].setLegEnd(legs[0].getJoints().D+step1);
+    legs[0].calculateAngles();
+
+    step1 = Point3f(0, -2*a1*i1*di1+a1*x21*di1, 0);
+    legs[2].setLegEnd(legs[2].getJoints().D+step1);
+    legs[2].calculateAngles();
+
+    step2 = Point3f(0, -2*a2*i2*di2+a2*x22*di2, 0);
+    legs[4].setLegEnd(legs[4].getJoints().D+step2);
+    legs[4].calculateAngles();
+
+
+    cout << x21 << ' ' << i1-di1 << endl;
     i1 = 0;
     i2 = 0;
-    for (j = 0; j < angle/2; j += da)
+    j = 0;
+    for (int n = 0; n < N; ++n)
     {
-        step1 = Point3f(dx1, 2*a1*i1*di1-a1*x21*di1, -dz1);
+
+        j+=da;
+        step1 = Point3f(dx1, -2*a1*i1*di1+a1*x21*di1, -dz1);
         legs[3].setLegEnd(legs[3].getJoints().D+step1);
         legs[3].calculateAngles();
 
-        step1 = Point3f(-dx1, 2*a1*i1*di1-a1*x21*di1, -dz1);
+        step1 = Point3f(-dx1, -2*a1*i1*di1+a1*x21*di1, -dz1);
         legs[5].setLegEnd(legs[5].getJoints().D+step1);
         legs[5].calculateAngles();
 
-        step2 = Point3f(dx2, 2*a2*i2*di2-a2*x22*di2, -dz2);
+        step2 = Point3f(-dx2, -2*a2*i2*di2+a2*x22*di2, dz2);
         legs[1].setLegEnd(legs[1].getJoints().D+step2);
         legs[1].calculateAngles();
 
         rotate(Point3f(0,da,0));
 
-        /*t1 = 1/tan(phi1+j);
-
-        dz1 = di1*sqrt((t1)*(t1)+1);
-        dx1 = -(t1)*dz1;*/
-
         dx1 = di1*cos(phi1+j);
         dz1 = di1*sin(phi1+j);
 
-        /*dz1 = abs(dz1);
-        dx1 = abs(dx1);*/
-
-
-        /*t2 = 1/tan(phi2+j);
-
-        dz2 = di2*sqrt((t2)*(t2)+1);
-        dx2 = -(t2)*dz2;*/
         dx2 = di2*cos(phi2+j);
         dz2 = di2*sin(phi2+j);
-
-        /*dz2 = abs(dz2);
-        dx2 = abs(dx2);*/
 
         view1.update('b', *this);
 
@@ -872,4 +901,24 @@ void Robot::walkRot3C(float angle, View& view1)
 
         waitKey(1);
     }
+
+    step1 = Point3f(0, -2*a1*i1*di1+a1*x21*di1, 0);
+    legs[3].setLegEnd(legs[3].getJoints().D+step1);
+    legs[3].calculateAngles();
+
+    step1 = Point3f(0, -2*a1*i1*di1+a1*x21*di1, 0);
+    legs[5].setLegEnd(legs[5].getJoints().D+step1);
+    legs[5].calculateAngles();
+
+    step2 = Point3f(0, -2*a2*i2*di2+a2*x22*di2, 0);
+    legs[1].setLegEnd(legs[1].getJoints().D+step2);
+    legs[1].calculateAngles();
+
+    Rx1 = (Mat_<double>(3,3) << cos(-angle), 0, sin(-angle), 0, 1, 0, -sin(-angle), 0, cos(-angle));
+    g11 = (legs[0].getJoints().D);
+    P1 = (Mat_<double>(3,1) << g11.x, g11.y, g11.z);
+    P11 = Rx1*P1;
+    g12 = Point3f(P11.at<double>(0,0), P11.at<double>(0,1), P11.at<double>(0,2));
+    steps1 = g11 - g12;
+    cout << steps1 << ' ' << sqrt(steps1.x*steps1.x + steps1.z*steps1.z) <<  endl;
 }
