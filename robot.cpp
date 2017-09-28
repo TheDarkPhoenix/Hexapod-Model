@@ -70,8 +70,8 @@ Robot::Robot(cv::Point3f pos, cv::Point3f ang, float width1, float length1, cv::
 
     for(int i = 0; i < 6; ++i)
     {
-        legs[i].initJointPoints();
         legs[i].setDevice(&device);
+        legs[i].initJointPoints();
     }
 }
 

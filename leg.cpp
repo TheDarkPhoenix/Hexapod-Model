@@ -20,6 +20,7 @@ void Leg::initJointPoints()
     calculateJointPoints();
     legEnd = legJoints.D;
     initAngles = angles;
+    calculateAngles();
 }
 
 
