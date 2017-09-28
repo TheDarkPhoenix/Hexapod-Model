@@ -31,6 +31,7 @@ int main()
     ///3 - poruszanie siê manualne
     ///4 - poruszanie siê automatyczne
     ///5 - automatyczne z poprawioną płynnością
+    ///6 - automatyczne z płynnym chodzeniem do przodu i zakręcaniem
 
     int mode = 6;
 
@@ -58,6 +59,9 @@ int main()
                 case 'W':
                     rob.move(Point3f(0,-transStep,0));
                     break;
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    break;
             }
         }
         else if(mode == 2)
@@ -82,7 +86,10 @@ int main()
                 case 'E':
                     rob.rotate(Point3f(0,0,-rotStep));
                     break;
-                }
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    break;
+            }
         }
         else if(mode == 3)
         {
@@ -105,6 +112,9 @@ int main()
                     break;
                 case 'E':
                     rob.walkRot(-0.05);
+                    break;
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
                     break;
             }
         }
@@ -130,6 +140,9 @@ int main()
                 case 'Q':
                     rob.walkRotC(-0.18, view1);
                     break;
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    break;
             }
         }
         else if(mode == 5)
@@ -154,6 +167,9 @@ int main()
                 case 'Q':
                     rob.walkRotC(-0.18, view1);
                     break;
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    break;
             }
         }
         else if(mode == 6)
@@ -177,6 +193,9 @@ int main()
                     break;
                 case 'Q':
                     rob.walkRot3C(-0.18, view1);
+                    break;
+                case 'R':
+                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
                     break;
             }
         }

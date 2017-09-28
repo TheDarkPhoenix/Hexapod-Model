@@ -647,7 +647,7 @@ void Robot::walk3C(Point3f steps, View& view1)
     float x2 = sqrt(x*x + z*z);
 
     float a = (8)/(x2*x2);
-    float di = 0.08;
+    float di = 0.18;//0.08
     float dz = 0, dx = 0;
 
     if(z == 0)
@@ -662,9 +662,6 @@ void Robot::walk3C(Point3f steps, View& view1)
         dz = (z<0)?(-abs(dz)):(abs(dz));
         dx = (x<0)?(-abs(dx)):(abs(dx));
     }
-
-    //cout << dx << ' ' << dz << endl;
-    //cout << x << ' ' << z << ' ' << x2 << endl;
 
     for (double i = 0; i < x2; i += di)
     {
