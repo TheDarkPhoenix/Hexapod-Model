@@ -718,6 +718,7 @@ void Robot::walkRot3C(float angle, View& view1)
 
     Rx1 = (Mat_<double>(3,3) << cos(angle), 0, sin(angle), 0, 1, 0, -sin(angle), 0, cos(angle));
     da = 0.01;
+    da = (angle<0)?(-da):da;
 
     double x2[6];
     double a[6];
@@ -739,7 +740,7 @@ void Robot::walkRot3C(float angle, View& view1)
 
         x2[i] = sqrt(x*x + z*z);
         a[i] = (-4*2)/(x2[i]*x2[i]);
-        di[i] = x2[i]*(da/angle)*2;
+        di[i] = x2[i]*(da/(angle))*2;
         phi[i] = atan2(z, x);
 
         dx[i] = di[i]*cos(phi[i]);
@@ -750,7 +751,7 @@ void Robot::walkRot3C(float angle, View& view1)
 
     j = 0;
 
-    int N = angle/(2*da);
+    int N = (angle)/(2*da);
 
     for (int n = 0; n < N; ++n)
     {
