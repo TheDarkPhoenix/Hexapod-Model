@@ -60,7 +60,7 @@ int main()
                     rob.move(Point3f(0,-transStep,0));
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }
@@ -87,7 +87,7 @@ int main()
                     rob.rotate(Point3f(0,0,-rotStep));
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }
@@ -114,7 +114,7 @@ int main()
                     rob.walkRot(-0.05);
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }
@@ -141,7 +141,7 @@ int main()
                     rob.walkRotC(-0.18, view1);
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }
@@ -168,7 +168,7 @@ int main()
                     rob.walkRotC(-0.18, view1);
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }
@@ -195,7 +195,7 @@ int main()
                     rob.walkRot3C(-0.18, view1);
                     break;
                 case 'R':
-                    rob = Robot(Point3f(0, 17 ,100), Point3f(0,0,0), 11.8, 36.5, Point3f(3.7, 5.8, 16.3));
+                    rob.restart(Point3f(0, 17 ,100), Point3f(0,0,0));
                     break;
             }
         }

@@ -31,6 +31,7 @@ class Robot
         cv::Point3f getAngles(){return angles;};
         rect getFrame();
         joints getLegJoints(int n);
+        void restart(cv::Point3f pos, cv::Point3f ang);
         void move(cv::Point3f p);
         void rotate(cv::Point3f ang);
         void walk(cv::Point3f steps);
